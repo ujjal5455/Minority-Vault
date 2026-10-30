@@ -11,8 +11,15 @@ All notable changes to this project are documented here. The format follows [Kee
 - Test proving `:engine` imports nothing from Android.
 - ktlint and detekt for every module; GitHub Actions CI.
 - Placeholder launch screen with the vault palette.
+- Phase 1: the complete game engine in `:engine`, pure and deterministic. `GameEngine.reduce(state, intent)` returns typed `RuleError`s and never throws for an illegal intent.
+  - Rules: vote weighting, minority and no-minority rounds, fines with caps and the all-in final round, pot split with rollover, the three contract templates, structured promises with verdicts, items, debtors and game-over ties.
+  - Twists: ExactMinority, SecondChance (flip window), Insider, RobinHood and NoTwist, offered three at a time by `TwistCatalog`.
+  - `toPublicView` / `toPrivateView`, which never show another player's vote before REVEAL; a `RevealSequence` for animations; public events for Keeper interjections.
+  - A SplitMix64 RNG stored in the game state, and a simulator with a random policy.
+  - 79 tests, including 1,000 simulated games that check coin conservation, no negative balances, no leaks and rule coverage.
 
 ### Changed
 - CLAUDE.md §2: filled rule gaps (vote weighting, fines for abstainers, VoteSale timing, flip window, Insider totals, rounding, no negative balances, coin conservation, question bank, game-over ties).
 - CLAUDE.md §2: promises are now structured (`Promise(from, to, side)`) and judged at REVEAL as kept, broken or void; the broken-promise stamp is public, details stay private until GAME_OVER.
 - CLAUDE.md §6–7: live Vault Keeper interjections from templates, triggered only by public events, rate-limited and silent during voting; new `KeeperLine` message; `MarkPromise` renamed `MakePromise`.
+- CLAUDE.md §2, §3, §9: recorded the Phase 1 rule decisions (twist choice timing, money moving at REVEAL, public lock dots, Insider and flip-window totals, proposal expiry, what counts as winning, capped payments, RNG kept in game state).

@@ -31,7 +31,7 @@ All numbers live in `GameConfig` and must never be hardcoded elsewhere.
 | Flip window (`SecondChance` only) | 10 s |
 | Keeper interjection cooldown | 20 s |
 
-**Round flow:** `QUESTION → NEGOTIATION → VOTE → [FLIP_WINDOW] → REVEAL → SETTLEMENT → (next round | GAME_OVER)`. `FLIP_WINDOW` happens only when the round's twist is `SecondChance`.
+**Round flow:** `QUESTION → NEGOTIATION → VOTE → [FLIP_WINDOW] → REVEAL → SETTLEMENT → (next round | GAME_OVER)`. `FLIP_WINDOW` happens only when the round's twist is `SecondChance`. All money and Debtor changes from resolution happen when REVEAL starts; SETTLEMENT only shows them.
 
 **Questions:** the engine picks each round's question from a `QuestionBank` of stable question IDs, using the seeded RNG and never repeating within a match. The engine stores only the ID; the text lives in localised resources outside `:engine`. The Keeper does not write questions.
 
@@ -51,12 +51,12 @@ All numbers live in `GameConfig` and must never be hardcoded elsewhere.
 
 **Contracts:** A contract is a structured, engine-enforced rule, never free text. Supported templates:
 - `ShareWinnings(from, to, percent)` — `percent` is 1–100. If `from` has winnings this round, transfer floor(winnings × percent / 100) to `to`.
-- `FixedPayment(from, to, amount, condition)` — conditions: `IF_FROM_WINS`, `IF_TO_WINS`, `ALWAYS`. "Wins" means "has winnings this round".
+- `FixedPayment(from, to, amount, condition)` — conditions: `IF_FROM_WINS`, `IF_TO_WINS`, `ALWAYS`. "Wins" means "has winnings this round" (more than 0; a share that rounds down to 0 doesn't count).
 - `VoteSale(debtor, buyer, price)` — `debtor` must be a Debtor when it is signed. From signing until the end of the round, only `buyer` may select, lock or unlock the debtor's vote (via the normal vote intents, naming the debtor); the debtor cannot. The buyer cannot use the debtor's items. If the buyer doesn't lock it, the debtor abstains. The debtor remains the player whose vote it is, so any winnings go to the debtor. `price` moves from buyer to debtor at step 6 whatever the outcome.
 
 Signing: contracts can be proposed and signed only during NEGOTIATION. The signer (the player who accepts) pays the fee, except for `VoteSale`, where the buyer always pays. A player who can't afford the fee can't sign (`RuleError`). A player may be the debtor in at most one `VoteSale` per round.
 
-Contracts expire at end of round.
+Contracts expire at end of round. Unsigned proposals expire when VOTE starts. A proposal can't be withdrawn, and only the counterparty can answer it. When a payment is capped, the engine records both what was owed and what was paid.
 
 **Promises:** ordinary chat is never judged. A **promise** is a structured message, not free text, and is never enforced. It only gets judged.
 - During NEGOTIATION a player can make a promise with the chat composer's promise button: `Promise(from, to, side)`, meaning "I will vote `side` (YES or NO) this round". `to` is one player (sent as a DM) or `EVERYONE` (sent to the public lobby). Only the speaker can make a promise; nobody can create one on someone else's behalf.
@@ -71,10 +71,10 @@ Contracts expire at end of round.
 
 **Items (MVP has only Double Vote):** each player starts with 1 Double Vote, usable once per match. It is applied to the player's own vote during VOTE, before locking, and is consumed when the vote is locked at the end of VOTE. Unlocking before the timer ends returns it. Later: Peek, Shield.
 
-**Twists:** chosen each round from `TwistCatalog`. Each twist is a typed object with validated parameters and a validity check against the current state. Examples:
+**Twists:** chosen each round from `TwistCatalog`. Each twist is a typed object with validated parameters and a validity check against the current state. When a round starts, the engine offers 3 valid twists with distinct ids. The host's Keeper picks one during QUESTION with a host-only `ChooseTwist`; if none arrives before QUESTION ends, the first option is used. Offers depend only on the game state, so the host can compute the next round's options early and prefetch the Keeper's choice. Examples:
 - `ExactMinority(n)` — the minority players win only if there are exactly `n` of them (counting players, not vote weight). Otherwise nobody wins this round: fines are paid as normal and the pot rolls over. Valid only for 1 ≤ n < active player count / 2.
-- `SecondChance` — after VOTE, a `FLIP_WINDOW` shows everyone the YES and NO weights only (never who voted what). Each player whose vote was locked YES or NO may flip it to the other side once. Abstainers cannot join. Counting then uses the flipped votes.
-- `Insider(playerId)` — during VOTE, that player's private view shows the live YES and NO weights (totals only, never individual votes). The player is chosen with the seeded RNG. Nobody else is told who the Insider is.
+- `SecondChance` — after VOTE, a `FLIP_WINDOW` shows everyone the YES and NO weights only (never who voted what), updating live as players flip. Each player whose vote was locked YES or NO may flip it to the other side once. Abstainers cannot join. Counting then uses the flipped votes.
+- `Insider(playerId)` — during VOTE, that player's private view shows the live YES and NO weights of locked votes (totals only, never individual votes). The player is chosen with the seeded RNG. Nobody else is told who the Insider is, not even at REVEAL; it only shows in the GAME_OVER history.
 - `RobinHood` — the payout goes to the poorest player instead of the minority players. "Poorest" means lowest balance after step 4, Debtors included; ties split the pot equally. Fines are unchanged. If there is no minority, the pot still rolls over and nobody is paid.
 - `NoTwist`.
 
@@ -82,7 +82,7 @@ Contracts expire at end of round.
 
 1. **The engine is pure Kotlin.** `:engine` has zero Android dependencies, is deterministic given a seed, and is fully unit-tested. All game logic lives there.
 2. **The host is authoritative.** One phone hosts and owns the true `GameState`. Clients send intents; the host validates, applies them through the engine, and broadcasts results.
-3. **Clients only receive what they may see.** The host sends each client a `PublicGameView` plus that client's own `PrivatePlayerView`. Never broadcast full state. Other players' votes are never sent before REVEAL. The only exceptions are vote *totals* (never individual votes), and only where a twist allows it: the Insider's private view during VOTE, and everyone's view during FLIP_WINDOW. Promise and contract visibility follows §2; the only public trace of a private contract before GAME_OVER is the anonymous "a contract was signed" event (§6).
+3. **Clients only receive what they may see.** The host sends each client a `PublicGameView` plus that client's own `PrivatePlayerView`. Never broadcast full state. Other players' votes are never sent before REVEAL; whether a player has locked (the lock dots) is public, which side is not. The only exceptions are vote *totals* (never individual votes), and only where a twist allows it: the Insider's private view during VOTE, and everyone's view during FLIP_WINDOW. Promise and contract visibility follows §2; the only public trace of a private contract before GAME_OVER is the anonymous "a contract was signed" event (§6).
 4. **The LLM never touches game state.** The Vault Keeper only (a) chooses from a list of valid twists the engine offers and (b) writes narration text. Its output is parsed, validated, and falls back to a deterministic choice on any failure.
 5. **AI is optional.** Every AI feature has an offline fallback. The game must be fully playable with airplane mode on.
 6. **No secrets in the APK.** No API keys in code, resources, or BuildConfig. Cloud LLM calls go through the proxy (see §6).
@@ -177,7 +177,7 @@ Keeper calls only happen on the host, only between phases (never blocking a time
 - Kotlin official style, enforced by ktlint. detekt must pass with no new issues.
 - Immutable data classes for state; `sealed interface` for intents/events/phases.
 - No `!!` outside tests. No `GlobalScope`. Inject dispatchers.
-- Engine functions are pure: `(GameState, Intent) -> Result<GameState, RuleError>` style. Randomness only via injected seeded RNG.
+- Engine functions are pure: `GameEngine.reduce(state, intent)` returns `Applied(state, events)` or `Rejected(RuleError)`. Randomness comes only from the seeded SplitMix64 RNG, whose state lives in `GameState` (seeded when the match is created), so the same seed and intents replay the same match.
 - Every engine rule and every twist has unit tests, including edge cases (ties, empty sides, all abstain, debtors, contracts chaining, rounding remainders).
 - Compose: stateless composables with previews; state hoisted to ViewModels. Respect reduced-motion and font scaling. Minimum touch target 48 dp. Content descriptions on icon-only controls.
 - Strings in `strings.xml` (plan for Hindi/regional localisation later).
