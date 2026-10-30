@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.hilt) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt) apply false
+    alias(libs.plugins.android.junit5) apply false
 }
 
 val minSdkLevel = libs.versions.minSdk.get().toInt()

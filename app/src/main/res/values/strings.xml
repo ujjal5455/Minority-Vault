@@ -1,5 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Minority Vault</string>
-    <string name="placeholder_tagline">Only the minority wins.</string>
+
+    <string name="setup_tagline">Only the minority wins.</string>
+    <string name="setup_mode">Pass-the-phone game: one phone, passed around the table.</string>
+    <string name="setup_player_label">Player %1$d</string>
+    <string name="setup_remove_player">Remove player %1$d</string>
+    <string name="setup_add_player">Add a player</string>
+    <string name="setup_start">Open the vault</string>
+    <string name="setup_names_hint">Give every player a different name.</string>
+
+    <string name="pass_phone_title">Pass the phone to %1$s</string>
+    <string name="pass_phone_negotiation">Your turn to make promises and deals.</string>
+    <string name="pass_phone_vote">Time to vote in secret.</string>
+    <string name="pass_phone_flip">Second chance: you may switch sides.</string>
+    <string name="pass_phone_privacy">Everyone else, look away.</string>
+    <string name="pass_phone_show">I\'m %1$s, show my screen</string>
+
+    <string name="pass_done_title">Everyone has had a turn</string>
+    <string name="pass_done_pending_none">No contracts are waiting for an answer.</string>
+    <plurals name="pass_done_pending">
+        <item quantity="one">%d contract is waiting for an answer.</item>
+        <item quantity="other">%d contracts are waiting for an answer.</item>
+    </plurals>
+    <string name="pass_done_again">Another round of turns</string>
+    <string name="pass_done_vote">Start the vote</string>
+
+    <string name="quit_title">Leave this game?</string>
+    <string name="quit_body">The match will be lost.</string>
+    <string name="quit_confirm">Leave</string>
+    <string name="quit_cancel">Keep playing</string>
 </resources>

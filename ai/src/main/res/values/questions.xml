@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The question bank. The content doesn't matter to the rules; only which side ends up smaller. -->
+    <string name="question_missing">A question the vault seems to have misplaced. Yes or no?</string>
+    <string name="question_hot_dog">Is a hot dog a sandwich?</string>
+    <string name="question_pineapple_pizza">Does pineapple belong on pizza?</string>
+    <string name="question_cereal_soup">Is cereal a soup?</string>
+    <string name="question_morning_person">Are you a morning person?</string>
+    <string name="question_tea_coffee">Tea over coffee?</string>
+    <string name="question_aliens">Do aliens already know about us?</string>
+    <string name="question_time_travel">Would you rather visit the past than the future?</string>
+    <string name="question_cats_dogs">Cats over dogs?</string>
+    <string name="question_water_wet">Is water wet?</string>
+    <string name="question_ketchup_fridge">Does ketchup belong in the fridge?</string>
+    <string name="question_invisible_fly">Would you rather be invisible than fly?</string>
+    <string name="question_remake">Can a remake ever beat the original?</string>
+    <string name="question_socks_sandals">Socks with sandals: acceptable?</string>
+    <string name="question_reply_all">Is reply-all ever a good idea?</string>
+    <string name="question_cricket_football">Cricket over football?</string>
+    <string name="question_spoilers">Are spoilers fair game after a week?</string>
+    <string name="question_horror">Do you enjoy horror films?</string>
+    <string name="question_robots">Will robots run the world within 50 years?</string>
+    <string name="question_second_chai">Is a second cup of chai always justified?</string>
+    <string name="question_lie_to_win">Would you lie to win this game?</string>
+    <string name="question_trust_left">Do you trust the person on your left?</string>
+    <string name="question_money_happiness">Can money buy happiness?</string>
+    <string name="question_ghost">Have you ever seen a ghost?</string>
+    <string name="question_socks_bed">Do you sleep with socks on?</string>
+    <string name="question_biryani">Is biryani just very confident rice?</string>
+    <string name="question_phones_dinner">Should phones stay face down at dinner?</string>
+    <string name="question_mountains_beach">Mountains over the beach?</string>
+    <string name="question_early_late">Is arriving early worse than arriving late?</string>
+    <string name="question_moon_year">Would you live on the moon for a year?</string>
+    <string name="question_superpower_secret">Would you keep a superpower secret?</string>
+    <string name="question_break_promise">Is it ever right to break a promise?</string>
+    <string name="question_pet_names">Should pets have human names?</string>
+</resources>

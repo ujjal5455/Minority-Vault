@@ -17,6 +17,13 @@ All notable changes to this project are documented here. The format follows [Kee
   - `toPublicView` / `toPrivateView`, which never show another player's vote before REVEAL; a `RevealSequence` for animations; public events for Keeper interjections.
   - A SplitMix64 RNG stored in the game state, and a simulator with a random policy.
   - 79 tests, including 1,000 simulated games that check coin conservation, no negative balances, no leaks and rule coverage.
+- Phase 2: the look of the game, and pass-the-phone play on one device.
+  - `:designsystem`: vault palette, bundled Big Shoulders Display and Instrument Sans fonts (OFL, see `docs/assets.md`), spacing, reduced-motion support, and VaultButton, PaperCard, KeeperBubble, TimerBar/TimerText, PlayerChip, Lever, VaultDial, Stamp, ContractCard and ChatBubble, each with previews at 1x and 1.3x font scale.
+  - `:ai`: `QuestionBank` with 32 questions; the engine only sees their ids.
+  - `:feature:round`: Question, Negotiation (lobby, promises, contracts), Vote, Flip and Reveal screens, with UI mappers from the engine's views.
+  - `:feature:results`: game-over ranking.
+  - `:app`: pass-the-phone play with a cover screen between private turns, driven by the real engine, with 8 tests including a full match played through UI events.
+- `PublicGameView.contractFee`, so clients can warn before signing.
 
 ### Changed
 - CLAUDE.md §2: filled rule gaps (vote weighting, fines for abstainers, VoteSale timing, flip window, Insider totals, rounding, no negative balances, coin conservation, question bank, game-over ties).

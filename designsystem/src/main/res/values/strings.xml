@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="keeper_name">Vault Keeper</string>
+    <string name="keeper_avatar_description">Vault Keeper</string>
+    <string name="promise_badge">Promise</string>
+    <string name="debtor_badge">Debtor</string>
+    <string name="contract_sign">Sign</string>
+    <string name="contract_decline">Decline</string>
+    <string name="timer_description">%1$s left</string>
+    <string name="lever_description">%1$s lever</string>
+    <string name="lever_pulled">Pulled</string>
+    <string name="lever_not_pulled">Not pulled</string>
+    <string name="dial_description">%1$s %2$d, %3$s %4$d</string>
+    <string name="player_locked">Locked</string>
+    <string name="player_not_locked">Not locked yet</string>
+
+    <plurals name="coins">
+        <item quantity="one">%d coin</item>
+        <item quantity="other">%d coins</item>
+    </plurals>
+    <plurals name="broken_promises">
+        <item quantity="one">%d broken promise</item>
+        <item quantity="other">%d broken promises</item>
+    </plurals>
+</resources>

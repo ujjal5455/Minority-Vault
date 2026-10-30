@@ -33,7 +33,7 @@ All numbers live in `GameConfig` and must never be hardcoded elsewhere.
 
 **Round flow:** `QUESTION → NEGOTIATION → VOTE → [FLIP_WINDOW] → REVEAL → SETTLEMENT → (next round | GAME_OVER)`. `FLIP_WINDOW` happens only when the round's twist is `SecondChance`. All money and Debtor changes from resolution happen when REVEAL starts; SETTLEMENT only shows them.
 
-**Questions:** the engine picks each round's question from a `QuestionBank` of stable question IDs, using the seeded RNG and never repeating within a match. The engine stores only the ID; the text lives in localised resources outside `:engine`. The Keeper does not write questions.
+**Questions:** the engine picks each round's question from a `QuestionBank` of stable question IDs, using the seeded RNG and never repeating within a match. The engine stores only the ID; the text lives in localised string resources in `:ai` (`QuestionBank`). Never rename or reuse an ID. The Keeper does not write questions.
 
 **Money invariants:**
 - Coins are conserved exactly: the sum of all balances plus the pot never changes during a match. There are no sinks.

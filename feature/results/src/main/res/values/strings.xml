@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="game_over_title">The vault closes</string>
+    <string name="game_over_single_winner">%1$s leaves with the most. The rest of you leave with stories.</string>
+    <string name="game_over_shared_winners">%1$s share the win. How touching. How rare.</string>
+    <string name="game_over_nobody">Every one of you ends in debt. The vault keeps everything.</string>
+    <string name="game_over_rank">%1$d</string>
+    <string name="game_over_winner">Winner</string>
+    <string name="game_over_debtor">Debtor, can\'t win</string>
+    <string name="game_over_play_again">Play again</string>
+    <string name="game_over_new_players">New players</string>
+    <string name="game_over_row_description">Rank %1$d, %2$s, %3$d coins</string>
+</resources>

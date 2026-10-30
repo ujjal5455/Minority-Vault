@@ -11,12 +11,16 @@ complexity:
     # Composables take many optional parameters by design.
     ignoreDefaultParameters: true
     ignoreAnnotated: ['Composable']
+  CyclomaticComplexMethod:
+    # A `when` that maps each value to one result (e.g. error -> message) isn't branching logic.
+    ignoreSimpleWhenEntries: true
 
 style:
   MagicNumber:
-    # Palette and config constants are named properties.
+    # Palette and config constants are named properties. Preview sample data is just sample data.
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotated: ['Preview', 'ScreenPreviews', 'ComponentPreviews']
   UnusedPrivateMember:
-    # Private @Preview functions are used by the IDE, not by code.
-    ignoreAnnotated: ['Preview']
+    # Private preview functions are used by the IDE, not by code.
+    ignoreAnnotated: ['Preview', 'ScreenPreviews', 'ComponentPreviews']

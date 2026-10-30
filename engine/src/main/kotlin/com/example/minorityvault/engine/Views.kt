@@ -23,6 +23,8 @@ data class PublicGameView(
     val twist: TwistInfo?,
     val isAllIn: Boolean,
     val baseFine: Int,
+    /** What signing a contract costs, so clients can warn before someone signs. */
+    val contractFee: Int,
     val pot: Int,
     val players: List<PublicPlayer>,
     val publicPromises: List<PublicPromise>,
@@ -75,6 +77,7 @@ fun GameState.toPublicView(): PublicGameView {
         twist = round?.twist?.publicInfo(),
         isAllIn = round != null && config.isFinalRound(number),
         baseFine = if (round == null) 0 else config.baseFine(number),
+        contractFee = config.contractFee,
         pot = pot,
         players = players.map { player ->
             PublicPlayer(

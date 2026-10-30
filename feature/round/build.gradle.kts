@@ -11,6 +11,7 @@ android {
 dependencies {
     implementation(project(":designsystem"))
     implementation(project(":protocol"))
+    implementation(project(":ai"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.material3)

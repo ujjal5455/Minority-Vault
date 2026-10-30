@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="round_no_question">Waiting for the question…</string>
+    <string name="round_of">Round %1$d of %2$d</string>
+    <string name="round_pot">Pot: %1$d</string>
+    <string name="round_fine">Majority fine: %1$d</string>
+    <string name="round_fine_all_in">All-in: the majority loses half</string>
+    <string name="side_yes">Yes</string>
+    <string name="side_no">No</string>
+    <string name="side_abstain">Abstained</string>
+    <string name="done_pass_phone">Done, pass the phone</string>
+    <string name="continue_label">Continue</string>
+    <string name="everyone">Everyone</string>
+    <string name="you">You</string>
+
+    <!-- Twists: short titles, and the Vault Keeper's announcement. -->
+    <string name="twist_none_title">No twist</string>
+    <string name="twist_none_line">No tricks this round. Just you, your friends, and the quiet arithmetic of betrayal.</string>
+    <string name="twist_exact_title">Exact minority: %1$d</string>
+    <plurals name="twist_exact_line">
+        <item quantity="one">The minority wins only if exactly %1$d of you stand in it. Otherwise the pot sleeps in my vault.</item>
+        <item quantity="other">The minority wins only if exactly %1$d of you stand in it. Otherwise the pot sleeps in my vault.</item>
+    </plurals>
+    <string name="twist_second_chance_title">Second chance</string>
+    <string name="twist_second_chance_line">After the vote you will see the totals, and each of you may switch sides once. Regret is permitted.</string>
+    <string name="twist_insider_title">Insider</string>
+    <string name="twist_insider_line">One of you will watch the count while voting. I won\'t say who. Study your friends\' faces.</string>
+    <string name="twist_robin_hood_title">Robin Hood</string>
+    <string name="twist_robin_hood_line">This round the pot goes to the poorest player, not the minority. Generosity, enforced.</string>
+
+    <!-- Question -->
+    <string name="question_title">The question</string>
+
+    <!-- Negotiation -->
+    <string name="tab_lobby">Lobby</string>
+    <string name="tab_messages">Promises</string>
+    <string name="tab_contracts">Contracts</string>
+    <string name="negotiation_turn">%1$s, make your deals</string>
+    <string name="lobby_players">At the table</string>
+    <string name="lobby_public_promises">Public promises</string>
+    <string name="lobby_no_public_promises">Nobody has promised anything in public. Wise.</string>
+    <string name="promise_line">I will vote %1$s this round.</string>
+    <string name="promise_to">To %1$s</string>
+    <string name="promises_received">Promises made to you</string>
+    <string name="promises_made">Your promises</string>
+    <string name="promises_none">None yet.</string>
+    <string name="promise_compose_title">Make a promise</string>
+    <string name="promise_compose_hint">Promises aren\'t enforced. Break one and you get a public red stamp.</string>
+    <string name="promise_compose_to">To</string>
+    <string name="promise_compose_side">I will vote</string>
+    <string name="promise_compose_send">Promise</string>
+
+    <string name="contracts_none">No contracts yet this round.</string>
+    <string name="contract_from">From %1$s</string>
+    <string name="contract_to">To %1$s</string>
+    <string name="contract_status_pending_you">Waiting for you</string>
+    <string name="contract_status_pending_them">Waiting for them</string>
+    <string name="contract_status_signed">Signed</string>
+    <string name="contract_status_declined">Declined</string>
+    <string name="contract_status_expired">Expired</string>
+    <string name="contract_fee_you">Signing costs you %1$d coins.</string>
+    <string name="contract_fee_buyer">The buyer pays the %1$d-coin fee.</string>
+    <string name="contract_compose_title">Propose a contract</string>
+    <string name="contract_compose_with">With</string>
+    <string name="contract_compose_type">Type</string>
+    <string name="contract_compose_who_pays">Who pays</string>
+    <string name="contract_compose_i_pay">I pay</string>
+    <string name="contract_compose_they_pay">They pay</string>
+    <string name="contract_compose_when">When</string>
+    <string name="contract_compose_amount">Amount</string>
+    <string name="contract_compose_percent">Share</string>
+    <string name="contract_compose_price">Price</string>
+    <string name="contract_compose_decrease">Decrease</string>
+    <string name="contract_compose_increase">Increase</string>
+    <string name="contract_compose_send">Propose</string>
+    <string name="contract_compose_vote_sale_unavailable">Vote sales need a Debtor: you, or the player you pick.</string>
+    <string name="contract_compose_pick_player">Pick a player first.</string>
+    <string name="template_share">Share winnings</string>
+    <string name="template_fixed">Fixed payment</string>
+    <string name="template_vote_sale">Vote sale</string>
+    <string name="condition_if_from_wins">If the payer wins</string>
+    <string name="condition_if_to_wins">If the receiver wins</string>
+    <string name="condition_always">No matter what</string>
+    <string name="terms_share">%1$s gives %2$s %3$d%% of this round\'s winnings</string>
+    <string name="terms_fixed_if_from_wins">%1$s pays %2$s %3$d coins if %1$s wins</string>
+    <string name="terms_fixed_if_to_wins">%1$s pays %2$s %3$d coins if %2$s wins</string>
+    <string name="terms_fixed_always">%1$s pays %2$s %3$d coins no matter what</string>
+    <string name="terms_vote_sale">%1$s sells this round\'s vote to %2$s for %3$d coins</string>
+
+    <!-- Vote -->
+    <string name="vote_title">%1$s, cast your vote</string>
+    <string name="vote_sold">Your vote belongs to %1$s this round. Nothing to do but watch.</string>
+    <string name="vote_double">Use my Double Vote</string>
+    <string name="vote_double_hint">Counts twice. One per game.</string>
+    <string name="vote_double_used">Double Vote applied</string>
+    <string name="vote_lock">Lock my vote</string>
+    <string name="vote_unlock">Unlock</string>
+    <string name="vote_locked">Locked. Unlock if you change your mind.</string>
+    <string name="vote_unlocked_warning">An unlocked vote counts as an abstention, and abstainers pay the fine.</string>
+    <string name="vote_bought">%1$s\'s vote (you bought it)</string>
+    <string name="vote_lock_bought">Lock %1$s\'s vote</string>
+    <string name="vote_insider">You\'re the Insider. Locked so far: Yes %1$d, No %2$d.</string>
+    <string name="vote_lock_status">Who has locked</string>
+
+    <!-- Flip -->
+    <string name="flip_title">%1$s, second chance</string>
+    <string name="flip_totals">The count so far: Yes %1$d, No %2$d</string>
+    <string name="flip_your_vote">You voted %1$s.</string>
+    <string name="flip_abstained">You abstained, so there\'s nothing to flip.</string>
+    <string name="flip_already">You already flipped.</string>
+    <string name="flip_to">Flip to %1$s</string>
+    <string name="flip_bought">%1$s\'s vote: %2$s</string>
+
+    <!-- Reveal -->
+    <string name="reveal_title">The reveal</string>
+    <string name="reveal_minority">The minority: %1$s</string>
+    <string name="reveal_no_minority">No minority. Everyone pays and the pot rolls over.</string>
+    <string name="reveal_winners">%1$s take %2$d each</string>
+    <string name="reveal_winner_single">%1$s takes %2$d</string>
+    <string name="reveal_no_winners_twist">Nobody qualifies this round. The pot rolls over.</string>
+    <string name="reveal_rollover">%1$d stays in the pot</string>
+    <string name="reveal_votes">Who voted what</string>
+    <string name="reveal_vote_double">%1$s ×2</string>
+    <string name="reveal_fines">Fines paid</string>
+    <string name="reveal_fine_line">%1$s paid %2$d</string>
+    <string name="reveal_broken">Broken promise</string>
+    <string name="reveal_new_debtor">%1$s is now a Debtor</string>
+    <string name="reveal_recovered">%1$s is out of debt</string>
+    <string name="reveal_balances">Balances</string>
+
+    <!-- Errors -->
+    <string name="error_wrong_phase">That can\'t be done right now.</string>
+    <string name="error_unknown_player">That player isn\'t in this game.</string>
+    <string name="error_vote_locked">Unlock your vote first.</string>
+    <string name="error_not_locked">That vote isn\'t locked.</string>
+    <string name="error_nothing_selected">Pull a lever before locking.</string>
+    <string name="error_vote_sold">You sold your vote this round.</string>
+    <string name="error_not_your_vote">That vote isn\'t yours to cast.</string>
+    <string name="error_already_flipped">You can only flip once.</string>
+    <string name="error_cannot_flip_abstain">An abstention can\'t be flipped.</string>
+    <string name="error_no_item">You\'ve already used your Double Vote.</string>
+    <string name="error_item_applied">Your Double Vote is already on.</string>
+    <string name="error_contract_same_player">A contract needs two different players.</string>
+    <string name="error_contract_not_party">You can only propose contracts you\'re part of.</string>
+    <string name="error_contract_percent">The share must be between 1% and 100%.</string>
+    <string name="error_contract_amount">The amount must be at least 1.</string>
+    <string name="error_contract_not_debtor">Only a Debtor can sell their vote.</string>
+    <string name="error_contract_already_sold">That vote has already been sold this round.</string>
+    <string name="error_contract_not_found">That contract no longer exists.</string>
+    <string name="error_contract_not_pending">That contract has already been answered.</string>
+    <string name="error_not_counterparty">Only the other party can answer this contract.</string>
+    <string name="error_cannot_afford_fee">Not enough coins to pay the signing fee.</string>
+    <string name="error_promise_self">You can\'t make a promise to yourself.</string>
+    <string name="error_generic">The vault refuses.</string>
+</resources>
