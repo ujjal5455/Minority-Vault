@@ -1,0 +1,28 @@
+# Gradle / build
+.gradle/
+.kotlin/
+build/
+captures/
+*.apk
+*.aab
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# Local machine config
+local.properties
+
+# Secrets (CLAUDE.md §3 rule 6) — never commit these
+*.jks
+*.keystore
+keystore.properties
+google-services.json
+.env
+.dev.vars
+
+# Proxy (Phase 6b)
+proxy/node_modules/
+proxy/.wrangler/

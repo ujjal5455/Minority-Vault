@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Window theme only; everything visible is drawn by Compose. Ink green avoids a white flash on launch. -->
+    <style name="Theme.MinorityVault" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/ink_green</item>
+        <item name="android:statusBarColor">@color/ink_green</item>
+        <item name="android:navigationBarColor">@color/ink_green</item>
+    </style>
+
+    <color name="ink_green">#FF0F2B27</color>
+</resources>

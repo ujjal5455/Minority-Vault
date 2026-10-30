@@ -1,0 +1,22 @@
+# Overrides on top of detekt's default config (buildUponDefaultConfig = true).
+# Keep this short; only relax a rule with a reason.
+
+naming:
+  FunctionNaming:
+    # Composables are PascalCase by convention.
+    ignoreAnnotated: ['Composable']
+
+complexity:
+  LongParameterList:
+    # Composables take many optional parameters by design.
+    ignoreDefaultParameters: true
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    # Palette and config constants are named properties.
+    ignorePropertyDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+  UnusedPrivateMember:
+    # Private @Preview functions are used by the IDE, not by code.
+    ignoreAnnotated: ['Preview']
