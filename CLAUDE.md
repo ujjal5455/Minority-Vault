@@ -29,6 +29,7 @@ All numbers live in `GameConfig` and must never be hardcoded elsewhere.
 | Vote phase | 20 s (unlocked players auto-abstain) |
 | Contract signing fee | 5 coins, paid by the signer, goes into the pot |
 | Flip window (`SecondChance` only) | 10 s |
+| Keeper interjection cooldown | 20 s |
 
 **Round flow:** `QUESTION → NEGOTIATION → VOTE → [FLIP_WINDOW] → REVEAL → SETTLEMENT → (next round | GAME_OVER)`. `FLIP_WINDOW` happens only when the round's twist is `SecondChance`.
 
@@ -55,7 +56,14 @@ All numbers live in `GameConfig` and must never be hardcoded elsewhere.
 
 Signing: contracts can be proposed and signed only during NEGOTIATION. The signer (the player who accepts) pays the fee, except for `VoteSale`, where the buyer always pays. A player who can't afford the fee can't sign (`RuleError`). A player may be the debtor in at most one `VoteSale` per round.
 
-Contracts expire at end of round. Verbal promises are just chat; the engine records them only if a player tags a message as a "promise" (used for the broken-promise stamp, never enforced).
+Contracts expire at end of round.
+
+**Promises:** ordinary chat is never judged. A **promise** is a structured message, not free text, and is never enforced. It only gets judged.
+- During NEGOTIATION a player can make a promise with the chat composer's promise button: `Promise(from, to, side)`, meaning "I will vote `side` (YES or NO) this round". `to` is one player (sent as a DM) or `EVERYONE` (sent to the public lobby). Only the speaker can make a promise; nobody can create one on someone else's behalf.
+- A player can hold one promise per recipient per round. A new promise to the same recipient replaces the old one. Promising YES to one player and NO to another is allowed: that is double-dealing, and one of them will break.
+- At REVEAL the engine judges every promise against the promiser's final effective vote, after any flip. It is **kept** if the vote matches `side` and **broken** otherwise, including abstaining. A promise is **void** (not judged) if the promiser's vote was controlled by a `VoteSale` buyer that round.
+- Visibility: a promise is shown with a promise badge to its recipient(s) only. At REVEAL a broken promise becomes public: the promiser's chip gets the red **Stamp** and a broken-promise count, but the recipient and the promise itself stay private to the two parties. At GAME_OVER every promise and contract is revealed to everyone for the betrayal graph.
+- Tagged promises are more credible than chat (they carry the stamp risk), which is why a player would make one at all.
 
 **Debtors:** still vote, can sell their vote via `VoteSale`, and cannot win the game while they are Debtors at GAME_OVER.
 
@@ -74,7 +82,7 @@ Contracts expire at end of round. Verbal promises are just chat; the engine reco
 
 1. **The engine is pure Kotlin.** `:engine` has zero Android dependencies, is deterministic given a seed, and is fully unit-tested. All game logic lives there.
 2. **The host is authoritative.** One phone hosts and owns the true `GameState`. Clients send intents; the host validates, applies them through the engine, and broadcasts results.
-3. **Clients only receive what they may see.** The host sends each client a `PublicGameView` plus that client's own `PrivatePlayerView`. Never broadcast full state. Other players' votes are never sent before REVEAL. The only exceptions are vote *totals* (never individual votes), and only where a twist allows it: the Insider's private view during VOTE, and everyone's view during FLIP_WINDOW.
+3. **Clients only receive what they may see.** The host sends each client a `PublicGameView` plus that client's own `PrivatePlayerView`. Never broadcast full state. Other players' votes are never sent before REVEAL. The only exceptions are vote *totals* (never individual votes), and only where a twist allows it: the Insider's private view during VOTE, and everyone's view during FLIP_WINDOW. Promise and contract visibility follows §2; the only public trace of a private contract before GAME_OVER is the anonymous "a contract was signed" event (§6).
 4. **The LLM never touches game state.** The Vault Keeper only (a) chooses from a list of valid twists the engine offers and (b) writes narration text. Its output is parsed, validated, and falls back to a deterministic choice on any failure.
 5. **AI is optional.** Every AI feature has an offline fallback. The game must be fully playable with airplane mode on.
 6. **No secrets in the APK.** No API keys in code, resources, or BuildConfig. Cloud LLM calls go through the proxy (see §6).
@@ -136,6 +144,13 @@ Keeper calls only happen on the host, only between phases (never blocking a time
 ```
 `twistId` must be one of the options the engine offered, else fall back. Profanity/safety filter on `line`, else fall back.
 
+**Interjections:** the Keeper also comments live, so it isn't silent while people scheme. Interjections:
+- come only from `TemplateKeeper` (instant, offline, never an LLM call), so they can never delay a timer;
+- are triggered only by public events from the engine: a public promise is made, a contract is signed (announced anonymously, with no parties or terms, e.g. "Somewhere, ink is drying."), a public chat burst, the negotiation timer reaching 30 s, a player becoming a Debtor, and at REVEAL a broken promise (naming the promiser, which is public by then);
+- never mention anything private: no DM content, contract parties or terms, private promises or votes;
+- are rate-limited by the interjection cooldown in `GameConfig`, and are never sent during VOTE or FLIP_WINDOW (near silence, §8);
+- are sent to all clients as a `KeeperLine` message and shown in the Keeper's speech bubble.
+
 **Bots:** `BotPlayer` with personality (`LOYAL`, `GREEDY`, `PARANOID`, `VENGEFUL`, `CHAOTIC`). Decisions come from code (game-theory heuristics using public info + its own deals). Chat lines come from templates, optionally rephrased by the Keeper provider. Bots must never see private info they couldn't legitimately know.
 
 **Player profiling:** after each match, compute per-player stats (promises made/broken, contracts signed, minority rate, risk score) and assign a style label. Store locally in Room. Used for the post-match betrayal graph and to personalise Keeper taunts.
@@ -143,8 +158,8 @@ Keeper calls only happen on the host, only between phases (never blocking a time
 ## 7. Networking protocol
 
 - Envelope: `{ v: protocolVersion, seq: Long, type: String, payload: {...} }`. Reject mismatched major versions with a clear error screen.
-- Client → host: `Join`, `Ready`, `ChatPublic`, `ChatDm`, `MarkPromise`, `ContractPropose`, `ContractRespond`, `VoteSelect`, `VoteLock`, `VoteUnlock`, `VoteFlip`, `UseItem`, `Heartbeat`. Vote intents carry an optional `forPlayer` used only by a `VoteSale` buyer. Engine intents use the same names as these messages.
-- Host → client: `LobbyUpdate`, `PhaseStarted(phase, endsAt)`, `PublicView`, `PrivateView`, `ChatMessage`, `ContractUpdate`, `RevealSequence`, `RoundSettled`, `GameOver`, `Error`.
+- Client → host: `Join`, `Ready`, `ChatPublic`, `ChatDm`, `MakePromise(to, side)`, `ContractPropose`, `ContractRespond`, `VoteSelect`, `VoteLock`, `VoteUnlock`, `VoteFlip`, `UseItem`, `Heartbeat`. Vote intents carry an optional `forPlayer` used only by a `VoteSale` buyer. Engine intents use the same names as these messages.
+- Host → client: `LobbyUpdate`, `PhaseStarted(phase, endsAt)`, `PublicView`, `PrivateView`, `ChatMessage` (may carry a promise), `ContractUpdate`, `KeeperLine`, `RevealSequence` (includes promise verdicts), `RoundSettled`, `GameOver`, `Error`.
 - Timers use host time; clients get `endsAt` plus a clock offset measured at join.
 - Reconnection: a dropped client may rejoin with its `playerToken` within 60 s; host resends full views. If the host drops, the game pauses on all clients with a clear message (host migration is out of scope for v1).
 - DMs route through the host. The host does not display DMs on its own screen unless the host player is a participant.

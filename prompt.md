@@ -46,8 +46,9 @@ Read CLAUDE.md §2, §3 and §9.
 Goal: implement the complete game rules in :engine as pure, deterministic, fully tested Kotlin. No UI, no networking.
 
 Tasks:
-1. Model: GameConfig, PlayerId, Player (name, balance, isBot, isDebtor, items), Phase (sealed), Round, Vote (YES/NO/ABSTAIN, doubled flag), Contract (sealed: ShareWinnings, FixedPayment, VoteSale), Promise, Twist (sealed), GameState.
-2. Intents (sealed interface), named to match the protocol in CLAUDE.md §7: StartGame, AdvancePhase, ContractPropose, ContractRespond, VoteSelect, VoteLock, VoteUnlock, VoteFlip, UseItem, MarkPromise, TimerExpired. Also a QuestionBank of question IDs (text stays out of :engine).
+1. Model: GameConfig, PlayerId, Player (name, balance, isBot, isDebtor, items), Phase (sealed), Round, Vote (YES/NO/ABSTAIN, doubled flag), Contract (sealed: ShareWinnings, FixedPayment, VoteSale), Promise (from, to player or EVERYONE, side) with verdict KEPT/BROKEN/VOID, Twist (sealed), GameState.
+2. Intents (sealed interface), named to match the protocol in CLAUDE.md §7: StartGame, AdvancePhase, ContractPropose, ContractRespond, VoteSelect, VoteLock, VoteUnlock, VoteFlip, UseItem, MakePromise, TimerExpired. Also a QuestionBank of question IDs (text stays out of :engine).
+   The reducer also emits typed public events (public promise made, contract signed anonymously, player became Debtor, promise broken at REVEAL) for Keeper interjections later. Events must never carry private details.
 3. A single reducer: reduce(state, intent, rng): Result<GameState, RuleError>. Illegal intents return typed errors, never throw.
 4. Resolution exactly as in CLAUDE.md §2: counting, no-minority rollover, twist application, fines with caps, pot split with remainder rollover, contracts in creation order, debtor status.
 5. TwistCatalog: ExactMinority(n), SecondChance, Insider(playerId), RobinHood, NoTwist. Each twist exposes: id, validity check for the current state, and how it modifies resolution. Add offerTwists(state, rng): List<Twist> returning 3 valid options for the Keeper to pick from.
@@ -56,7 +57,7 @@ Tasks:
 8. A simulator: simulateGame(config, players, policies, seed) that plays full games with simple random policies. Use it in a property-style test that runs 1,000 seeded games and asserts invariants: balances + pot conserved exactly (CLAUDE.md §2 has no sinks), no negative balance or pot, no votes leaked in views, game always ends, no exceptions.
 
 Acceptance:
-- `./gradlew :engine:test` passes with tests covering every rule and twist, ties, empty sides, all-abstain, debtors (including recovery and all-debtor game over), chained contracts, VoteSale, the flip window, Insider totals, RobinHood ties, rounding.
+- `./gradlew :engine:test` passes with tests covering every rule and twist, ties, empty sides, all-abstain, debtors (including recovery and all-debtor game over), chained contracts, VoteSale, the flip window, Insider totals, RobinHood ties, rounding, and promise verdicts (kept, broken by abstaining, broken by flipping, void under VoteSale, replaced promise, contradictory promises to two players).
 - Same seed + same intents = identical final state.
 
 Stop and report: test count, any rule ambiguity you hit and how you resolved it (and propose CLAUDE.md edits).
@@ -120,7 +121,7 @@ Goal: the complete game playable across multiple phones, host authoritative.
 Tasks:
 1. HostGameController: owns GameState, applies ClientIntents through the engine reducer, runs phase timers on host time, broadcasts PublicView to all and PrivateView to each player.
 2. ClientGameController: renders views, sends intents, shows countdowns using endsAt + clock offset.
-3. Chat: public lobby and DMs routed through host. MarkPromise on a message. DMs only delivered to the two participants.
+3. Chat: public lobby and DMs routed through host. A promise button in the chat composer makes a structured promise (side YES/NO, to one player or everyone), shown with a promise badge. DMs and private promises only delivered to the two participants. Keeper interjections arrive as KeeperLine (template text can be placeholder until Phase 6).
 4. Contracts end to end: propose from a template picker (never free text), respond, fee charged, shown on both sides, executed at settlement.
 5. Vote: select, lock, unlock before timer ends, double vote. Unlocked at timer end = abstain.
 6. Reveal and settlement: host sends a RevealSequence; all phones play it in sync.
@@ -169,7 +170,7 @@ Goal: an AI host that picks twists and taunts players, with zero risk to game in
 
 Tasks:
 1. :ai — VaultKeeper interface: suspend fun choose(context: KeeperContext, options: List<TwistOption>): KeeperOutput. KeeperContext includes round number, public balances, recent public events, broken promises, and player style labels. Never DMs or votes.
-2. TemplateKeeper: deterministic, seeded, 40+ template lines across situations (round start, someone broke a promise, big pot, someone near bankruptcy, final round). Always works.
+2. TemplateKeeper: deterministic, seeded, 40+ template lines across situations (round start, someone broke a promise, big pot, someone near bankruptcy, final round). Always works. Plus 30+ interjection lines for the live triggers in CLAUDE.md §6 (public promise, anonymous contract signed, chat burst, 30 s left, new Debtor, promise broken at REVEAL), with the cooldown and the VOTE/FLIP_WINDOW silence enforced. Test that no interjection ever contains private data.
 3. NanoKeeper: ML Kit GenAI Prompt API. Check feature availability at runtime; download model if needed and allowed; handle BUSY and quota errors with fallback.
 4. CloudKeeper: calls the proxy (Phase 6b) with a 4 s timeout.
 5. KeeperChain: Nano → Cloud → Template. Prefetch next round's output during the current reveal so a timer never waits on AI.
