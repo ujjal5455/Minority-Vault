@@ -158,11 +158,13 @@ Keeper calls only happen on the host, only between phases (never blocking a time
 
 ## 7. Networking protocol
 
-- Envelope: `{ v: protocolVersion, seq: Long, type: String, payload: {...} }`. Reject mismatched major versions with a clear error screen.
-- Client → host: `Join`, `Ready`, `ChatPublic`, `ChatDm`, `MakePromise(to, side)`, `ContractPropose`, `ContractRespond`, `VoteSelect`, `VoteLock`, `VoteUnlock`, `VoteFlip`, `UseItem`, `Heartbeat`. Vote intents carry an optional `forPlayer` used only by a `VoteSale` buyer. Engine intents use the same names as these messages.
-- Host → client: `LobbyUpdate`, `PhaseStarted(phase, endsAt)`, `PublicView`, `PrivateView`, `ChatMessage` (may carry a promise), `ContractUpdate`, `KeeperLine`, `RevealSequence` (includes promise verdicts), `RoundSettled`, `GameOver`, `Error`.
-- Timers use host time; clients get `endsAt` plus a clock offset measured at join.
-- Reconnection: a dropped client may rejoin with its `playerToken` within 60 s; host resends full views. If the host drops, the game pauses on all clients with a clear message (host migration is out of scope for v1).
+- Envelope: `{ v: protocolVersion, seq: Long, type: String, payload: {...} }`. `v` is `"major.minor"`; a new minor may only add optional fields, which older phones ignore. Reject mismatched major versions with a clear error screen.
+- Wire types live in `:protocol` as copies of the engine's view types, with converters both ways; the engine has no serialization code. A test sends every view of simulated games through JSON and checks it arrives unchanged.
+- Client → host: `Join(name, playerToken?)`, `Ready`, `ChatPublic`, `ChatDm`, `MakePromise(to, side)`, `ContractPropose`, `ContractRespond`, `VoteSelect`, `VoteLock`, `VoteUnlock`, `VoteFlip`, `UseItem`, `Heartbeat(sentAt)`. No client message names its sender: the host takes it from the connection. Vote intents carry an optional `forPlayer` used only by a `VoteSale` buyer. Engine intents use the same names as these messages.
+- Host → client: `Welcome(playerId, playerToken, roomCode)` (to the joiner only), `LobbyUpdate`, `PhaseStarted(phase, endsAt)`, `PublicView`, `PrivateView`, `ChatMessage` (may carry a promise), `ContractUpdate`, `KeeperLine`, `RevealSequence` (includes promise verdicts), `RoundSettled`, `GameOver`, `Error(code)`, `HeartbeatReply(clientSentAt, hostTime)`.
+- Lobby: hosts advertise as `ROOM|Host name` with a 4-letter room code (no I or O). Names are 1–16 characters and unique in the room, ignoring case; a refused name keeps the connection open so the player can try another. Bots fill seats and count toward the 4 needed to start.
+- Timers use host time; clients get `endsAt` plus a clock offset measured from heartbeat round trips (every 3 s from the moment they join, using the quickest recent trip).
+- Reconnection: 12 s without any message counts as a drop, even if the radio hasn't noticed. A dropped client may rejoin with its `playerToken` within 60 s; host resends full views. In the lobby an unclaimed seat is freed after 60 s; once the game has started the seat stays, and Phase 10 decides what it becomes. If the host drops, the game pauses on all clients with a clear message (host migration is out of scope for v1).
 - DMs route through the host. The host does not display DMs on its own screen unless the host player is a participant.
 
 ## 8. Visual and audio identity

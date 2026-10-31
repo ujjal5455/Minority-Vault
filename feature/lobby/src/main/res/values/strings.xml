@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="back">Back</string>
+
+    <string name="home_title">Minority Vault</string>
+    <string name="home_tagline">Only the minority wins.</string>
+    <string name="home_name_label">Your name</string>
+    <string name="home_name_needed">Tell the vault your name to host or join.</string>
+    <string name="home_host">Host a game</string>
+    <string name="home_host_hint">Your phone opens a room. Everyone else joins from their own phone.</string>
+    <string name="home_join">Join a game</string>
+    <string name="home_join_hint">Find a room someone nearby has opened.</string>
+    <string name="home_pass_phone">Pass the phone</string>
+    <string name="home_pass_phone_hint">One phone, passed around the table. Works anywhere.</string>
+
+    <string name="permission_title">The vault needs to find the others</string>
+    <string name="permission_explain">Phones in this room talk to each other over Bluetooth and Wi-Fi. No internet, and the vault never asks where you are. Android will ask you to allow nearby devices.</string>
+    <string name="permission_allow">Allow nearby devices</string>
+    <string name="permission_denied">Without nearby devices, phones can\'t find each other. You can still play by passing one phone around.</string>
+    <string name="permission_ask_again">Ask again</string>
+    <string name="permission_blocked">Android won\'t ask again. Allow \"Nearby devices\" in this app\'s settings, then come back.</string>
+    <string name="permission_open_settings">Open settings</string>
+
+    <string name="host_title">Your room</string>
+    <string name="host_code_label">Room code</string>
+    <string name="host_code_description">Room code %1$s</string>
+    <string name="host_status_starting">Opening the room…</string>
+    <string name="host_status_live">Waiting for players. Everyone else opens Join a game.</string>
+    <string name="host_add_bot">Add a bot</string>
+    <string name="host_start">Open the vault</string>
+    <plurals name="host_need_players">
+        <item quantity="one">%d more player needed to start. Bots count.</item>
+        <item quantity="other">%d more players needed to start. Bots count.</item>
+    </plurals>
+    <string name="host_waiting_reconnect">Waiting for everyone to reconnect.</string>
+    <string name="host_retry">Try again</string>
+    <string name="host_remove">Remove %1$s</string>
+    <string name="host_close">Close the room</string>
+
+    <string name="sealed_title">The vault is sealed</string>
+    <string name="sealed_body">Everyone has a seat. Rounds over the network are still being built, so tonight ends here. Pass one phone around to play for real.</string>
+
+    <string name="failure_permission">Nearby devices aren\'t allowed.</string>
+    <string name="failure_radio">Turn on Bluetooth and Wi-Fi, then try again.</string>
+    <string name="failure_location">Turn on location services, then try again. Older Android needs it to find nearby phones.</string>
+    <string name="failure_endpoint">That room just went out of reach.</string>
+    <string name="failure_other">Something went wrong with the radio. Try again.</string>
+
+    <string name="players_count">Players: %1$d of %2$d</string>
+    <string name="player_you">You</string>
+    <string name="player_host">Host</string>
+    <string name="player_bot">Bot</string>
+    <string name="player_reconnecting">Reconnecting…</string>
+
+    <string name="join_title">Join a game</string>
+    <string name="join_searching">Looking for rooms nearby…</string>
+    <string name="join_searching_hint">Stay close to the host. The room appears here when their phone is in reach.</string>
+    <string name="join_room">%1$s · %2$s\'s room</string>
+    <string name="join_connecting">Knocking on room %1$s…</string>
+    <string name="join_name_taken">Someone in that room already goes by that name.</string>
+    <string name="join_name_invalid">Names need 1 to 16 characters.</string>
+    <string name="join_try_name">Try this name</string>
+    <string name="join_room_title">Room %1$s</string>
+    <string name="join_waiting">Waiting for %1$s to open the vault.</string>
+    <string name="join_reconnecting">Lost the host. Trying to get back in; your seat is kept for a minute.</string>
+    <string name="join_look_again">Look for rooms</string>
+    <string name="join_leave">Leave the room</string>
+
+    <string name="end_version">This phone speaks vault protocol %1$s, but the host speaks %2$s. Update both phones to the same version of Minority Vault.</string>
+    <string name="end_version_unknown">The host runs a different version of Minority Vault. Update both phones to the same version.</string>
+    <string name="end_full">That room is full.</string>
+    <string name="end_in_progress">That game started without you.</string>
+    <string name="end_removed">The host showed you out.</string>
+    <string name="end_closed">The host closed the room.</string>
+    <string name="end_host_lost">The host never came back.</string>
+    <string name="end_connection_failed">Couldn\'t get into that room. Move closer to the host and try again.</string>
+</resources>

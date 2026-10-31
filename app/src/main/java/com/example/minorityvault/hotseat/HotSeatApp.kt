@@ -2,15 +2,6 @@ package com.example.minorityvault.hotseat
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ContentTransform
-import androidx.compose.animation.core.CubicBezierEasing
-import androidx.compose.animation.core.snap
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -24,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.minorityvault.R
-import com.example.minorityvault.designsystem.VaultBackdrop
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.feature.results.GameOverScreen
 import com.example.minorityvault.feature.round.FlipScreen
@@ -33,18 +23,26 @@ import com.example.minorityvault.feature.round.QuestionScreen
 import com.example.minorityvault.feature.round.RevealScreen
 import com.example.minorityvault.feature.round.RoundAction
 import com.example.minorityvault.feature.round.VoteScreen
+import com.example.minorityvault.heavyPanelSlide
+import com.example.minorityvault.instant
+import com.example.minorityvault.quickFade
 
 @Composable
-fun HotSeatRoute(viewModel: HotSeatViewModel = viewModel()) {
+fun HotSeatRoute(onExit: () -> Unit, viewModel: HotSeatViewModel = viewModel()) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    HotSeatApp(state, viewModel::onEvent)
+    HotSeatApp(state, viewModel::onEvent, onExit)
 }
 
-/** Picks the screen for the current phase and turn. */
+/** Picks the screen for the current phase and turn. Back from setup leaves; back mid-game asks first. */
 @Composable
-fun HotSeatApp(state: HotSeatUiState, onEvent: (HotSeatEvent) -> Unit, modifier: Modifier = Modifier) {
+fun HotSeatApp(
+    state: HotSeatUiState,
+    onEvent: (HotSeatEvent) -> Unit,
+    onExit: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     var confirmQuit by rememberSaveable { mutableStateOf(false) }
-    BackHandler(enabled = state !is HotSeatUiState.Setup) { confirmQuit = true }
+    BackHandler { if (state is HotSeatUiState.Setup) onExit() else confirmQuit = true }
     if (confirmQuit) {
         QuitDialog(
             onQuit = {
@@ -55,23 +53,22 @@ fun HotSeatApp(state: HotSeatUiState, onEvent: (HotSeatEvent) -> Unit, modifier:
         )
     }
     val reducedMotion = VaultTheme.reducedMotion
-    VaultBackdrop(modifier) {
-        AnimatedContent(
-            targetState = state,
-            contentKey = { it::class },
-            transitionSpec = {
-                when {
-                    reducedMotion -> fadeIn(snap()) togetherWith fadeOut(snap())
+    AnimatedContent(
+        targetState = state,
+        modifier = modifier,
+        contentKey = { it::class },
+        transitionSpec = {
+            when {
+                reducedMotion -> instant()
 
-                    // The vault door does its own closing animation.
-                    targetState is HotSeatUiState.PassPhone -> quickFade()
+                // The vault door does its own closing animation.
+                targetState is HotSeatUiState.PassPhone -> quickFade()
 
-                    else -> heavyPanelSlide()
-                }
-            },
-            label = "hot seat screen",
-        ) { screen -> HotSeatScreen(screen, onEvent) }
-    }
+                else -> heavyPanelSlide()
+            }
+        },
+        label = "hot seat screen",
+    ) { screen -> HotSeatScreen(screen, onEvent) }
 }
 
 @Composable
@@ -103,22 +100,6 @@ private fun HotSeatScreen(screen: HotSeatUiState, onEvent: (HotSeatEvent) -> Uni
         )
     }
 }
-
-private fun quickFade(): ContentTransform =
-    fadeIn(tween(QUICK_FADE_MILLIS)) togetherWith fadeOut(tween(QUICK_FADE_MILLIS))
-
-/** The new screen rises into place like a heavy panel; the old one lifts away. */
-private fun heavyPanelSlide(): ContentTransform {
-    val rise = slideInVertically(tween(PANEL_MILLIS, easing = HeavyEasing)) { it / PANEL_RISE } + fadeIn()
-    val lift = slideOutVertically(tween(PANEL_MILLIS, easing = HeavyEasing)) { -it / PANEL_LIFT } + fadeOut()
-    return rise togetherWith lift
-}
-
-private val HeavyEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
-private const val PANEL_MILLIS = 480
-private const val QUICK_FADE_MILLIS = 150
-private const val PANEL_RISE = 3
-private const val PANEL_LIFT = 6
 
 @Composable
 private fun QuitDialog(onQuit: () -> Unit, onDismiss: () -> Unit) {

@@ -14,6 +14,11 @@ complexity:
   CyclomaticComplexMethod:
     # A `when` that maps each value to one result (e.g. error -> message) isn't branching logic.
     ignoreSimpleWhenEntries: true
+  TooManyFunctions:
+    # Small private helpers make a state machine (like the network sessions) easier to read, and an interface
+    # fixes how many overrides a class has. Count only what a class offers to others.
+    ignorePrivate: true
+    ignoreOverridden: true
 
 style:
   MagicNumber:

@@ -27,11 +27,20 @@ All notable changes to this project are documented here. The format follows [Kee
 - Glass vault look: frosted-glass panels (Haze blur on Android 12+, tinted fallback below) over a drifting brass-and-teal backdrop; `GlassSurface`, `VaultBackdrop`, `VaultPreviewTheme`.
 - Animations: staged reveal (dial overshoot and settle with totals hidden until it stops, votes flipping over one by one, coin burst, counting payout and balances, stamps on cue), lever overshoot, button press, lock bolt, typewriter Keeper with a glowing keyhole, brass sheen, pot pulse, vault-door cover and heavy-panel screen transitions, game-over ranking rising from last place. All respect reduced motion.
 - `RoundSummary.balancesBefore` and `RevealStep.Settled.previous`, so balances can count from their pre-round values.
+- Phase 3: phones find each other offline and join a lobby.
+  - `:protocol`: versioned envelopes, every client and host message from CLAUDE.md §7 (plus `Welcome` and `HeartbeatReply`), wire copies of the engine's views with converters both ways, and a codec that never throws. Tests cover every message type, version handling, garbage input, and every view of 25 simulated games arriving unchanged.
+  - `:net`: a `Transport` interface with Nearby Connections (`P2P_STAR`) and an in-memory fake that can simulate dropped radios and silent phones. `HostSession` seats players, checks names and versions, hands out rejoin tokens, answers heartbeats and notices silence. `ClientSession` browses, joins, measures the host's clock and rejoins the same seat after a drop. 20 tests.
+  - Runtime permissions per Android version (`NearbyPermissions`), with an explanation first, a "denied" state that keeps pass-the-phone available, and a route to Settings when Android won't ask again. Each permission is explained in `docs/permissions.md`.
+  - `:feature:lobby`: home screen (name, host, join, pass the phone), host lobby (big room code, players, bots, start), join flow (rooms nearby, name retry, waiting room, reconnecting banner, clear endings including version mismatch).
+  - Starting a networked game locks the lobby; the rounds themselves arrive in Phase 4.
 
 ### Changed
 - Question bank rewritten to provoke: 61 questions about the people at the table, the game itself, dilemmas, temptation and existential doubt. Most of the old light questions are retired; their ids are not reused. Nothing had been released, so no saved match refers to them.
 - The question now stays on screen during negotiation, not only on the question and vote screens.
 - CLAUDE.md §2: question tone and visibility.
+- CLAUDE.md §7: protocol versions, wire types, `Welcome` and `HeartbeatReply`, lobby rules, heartbeat timing and what happens to a dropped seat.
+- detekt's TooManyFunctions now counts only non-private, non-override functions.
+- The app opens on a home screen; pass-the-phone play is one of its three choices.
 - CLAUDE.md §2: filled rule gaps (vote weighting, fines for abstainers, VoteSale timing, flip window, Insider totals, rounding, no negative balances, coin conservation, question bank, game-over ties).
 - CLAUDE.md §2: promises are now structured (`Promise(from, to, side)`) and judged at REVEAL as kept, broken or void; the broken-promise stamp is public, details stay private until GAME_OVER.
 - CLAUDE.md §6–7: live Vault Keeper interjections from templates, triggered only by public events, rate-limited and silent during voting; new `KeeperLine` message; `MarkPromise` renamed `MakePromise`.
