@@ -49,7 +49,7 @@ private val VaultColorScheme = darkColorScheme(
     onError = AgedPaper,
 )
 
-private val VaultShapes = Shapes(
+internal val VaultShapes = Shapes(
     extraSmall = RoundedCornerShape(4.dp),
     small = RoundedCornerShape(6.dp),
     medium = RoundedCornerShape(10.dp),

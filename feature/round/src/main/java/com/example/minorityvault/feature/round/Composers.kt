@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.GlassSurface
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.component.VaultButton
@@ -161,12 +161,7 @@ private fun DraftOptions(draft: ContractDraft, onChange: (ContractDraft) -> Unit
 
 @Composable
 private fun ComposerPanel(title: String, content: @Composable () -> Unit) {
-    Surface(
-        color = VaultTheme.colors.panel,
-        contentColor = VaultTheme.colors.onPanel,
-        shape = MaterialTheme.shapes.medium,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+    GlassSurface(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(VaultSpacing.lg), verticalArrangement = Arrangement.spacedBy(VaultSpacing.sm)) {
             Text(title, style = MaterialTheme.typography.headlineSmall)
             content()
@@ -177,7 +172,7 @@ private fun ComposerPanel(title: String, content: @Composable () -> Unit) {
 @ComponentPreviews
 @Composable
 private fun ComposersPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         Column(Modifier.padding(VaultSpacing.lg), verticalArrangement = Arrangement.spacedBy(VaultSpacing.lg)) {
             PromiseComposer(PreviewData.asha, PreviewData.players, onPromise = { _, _ -> })
             ContractComposer(PreviewData.asha, PreviewData.players, onPropose = {})

@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.component.KeeperBubble
 import com.example.minorityvault.designsystem.component.PaperCard
 import com.example.minorityvault.designsystem.component.VaultButton
@@ -37,7 +37,7 @@ fun QuestionScreen(state: QuestionUiState, onContinue: (() -> Unit)?, modifier: 
 @ScreenPreviews
 @Composable
 private fun QuestionScreenPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         QuestionScreen(QuestionUiState(PreviewData.header, PreviewData.players), onContinue = {})
     }
 }

@@ -147,6 +147,7 @@ class ResolutionTest {
         state.summary.reveal.steps.last() shouldBe RevealStep.Settled(
             balances = mapOf(P1 to 115, P2 to 115, P3 to 90, P4 to 90, P5 to 90),
             pot = 0,
+            previous = mapOf(P1 to 100, P2 to 100, P3 to 100, P4 to 100, P5 to 100),
         )
     }
 

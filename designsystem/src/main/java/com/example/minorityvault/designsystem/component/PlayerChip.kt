@@ -1,6 +1,5 @@
 package com.example.minorityvault.designsystem.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,10 +21,13 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.CountingText
+import com.example.minorityvault.designsystem.GlassSurface
 import com.example.minorityvault.designsystem.R
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
+import com.example.minorityvault.designsystem.glassRim
 import com.example.minorityvault.designsystem.preview.ComponentPreviews
 
 /**
@@ -45,12 +46,9 @@ fun PlayerChip(
 ) {
     val colors = VaultTheme.colors
     val description = playerDescription(name, balance, brokenPromises, isDebtor, hasLocked)
-    Surface(
+    GlassSurface(
         modifier = modifier.clearAndSetSemantics { contentDescription = description },
-        shape = MaterialTheme.shapes.medium,
-        color = colors.panel,
-        contentColor = colors.onPanel,
-        border = BorderStroke(1.dp, if (highlighted) colors.brass else colors.panelRaised),
+        rim = if (highlighted) glassRim(colors.brass, HIGHLIGHT_RIM_STRENGTH) else glassRim(),
     ) {
         Row(
             Modifier.padding(VaultSpacing.sm),
@@ -60,8 +58,9 @@ fun PlayerChip(
             Initials(name, hasLocked)
             Column(Modifier.weight(1f, fill = false)) {
                 Text(name, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text(
-                    pluralStringResource(R.plurals.coins, balance, balance),
+                CountingText(
+                    value = balance,
+                    format = { pluralStringResource(R.plurals.coins, it, it) },
                     style = MaterialTheme.typography.headlineSmall,
                     color = colors.brass,
                 )
@@ -134,11 +133,12 @@ internal fun initialsOf(name: String): String =
 
 private val AVATAR_SIZE = 40.dp
 private val LOCK_DOT_SIZE = 14.dp
+private const val HIGHLIGHT_RIM_STRENGTH = 1.8f
 
 @ComponentPreviews
 @Composable
 private fun PlayerChipPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         Column(Modifier.padding(VaultSpacing.lg), verticalArrangement = Arrangement.spacedBy(VaultSpacing.sm)) {
             PlayerChip("Asha Rao", balance = 115, highlighted = true)
             PlayerChip("Ben", balance = 62, brokenPromises = 2, hasLocked = true)

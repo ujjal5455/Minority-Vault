@@ -1,37 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- The question bank. The content doesn't matter to the rules; only which side ends up smaller. -->
+    <!--
+        The question bank. The content doesn't matter to the rules, only which side ends up smaller, but it is
+        what the table argues about while it schemes. Questions should sting: paranoia about the people at the
+        table, dilemmas that start fights, temptation, and existential doubt. Keep them yes/no, short enough to
+        read in a few seconds, and never aimed at real groups of people or at self-harm.
+    -->
     <string name="question_missing">A question the vault seems to have misplaced. Yes or no?</string>
-    <string name="question_hot_dog">Is a hot dog a sandwich?</string>
-    <string name="question_pineapple_pizza">Does pineapple belong on pizza?</string>
-    <string name="question_cereal_soup">Is cereal a soup?</string>
-    <string name="question_morning_person">Are you a morning person?</string>
-    <string name="question_tea_coffee">Tea over coffee?</string>
-    <string name="question_aliens">Do aliens already know about us?</string>
-    <string name="question_time_travel">Would you rather visit the past than the future?</string>
-    <string name="question_cats_dogs">Cats over dogs?</string>
-    <string name="question_water_wet">Is water wet?</string>
-    <string name="question_ketchup_fridge">Does ketchup belong in the fridge?</string>
-    <string name="question_invisible_fly">Would you rather be invisible than fly?</string>
-    <string name="question_remake">Can a remake ever beat the original?</string>
-    <string name="question_socks_sandals">Socks with sandals: acceptable?</string>
-    <string name="question_reply_all">Is reply-all ever a good idea?</string>
-    <string name="question_cricket_football">Cricket over football?</string>
-    <string name="question_spoilers">Are spoilers fair game after a week?</string>
-    <string name="question_horror">Do you enjoy horror films?</string>
-    <string name="question_robots">Will robots run the world within 50 years?</string>
-    <string name="question_second_chai">Is a second cup of chai always justified?</string>
-    <string name="question_lie_to_win">Would you lie to win this game?</string>
-    <string name="question_trust_left">Do you trust the person on your left?</string>
-    <string name="question_money_happiness">Can money buy happiness?</string>
-    <string name="question_ghost">Have you ever seen a ghost?</string>
-    <string name="question_socks_bed">Do you sleep with socks on?</string>
-    <string name="question_biryani">Is biryani just very confident rice?</string>
-    <string name="question_phones_dinner">Should phones stay face down at dinner?</string>
-    <string name="question_mountains_beach">Mountains over the beach?</string>
-    <string name="question_early_late">Is arriving early worse than arriving late?</string>
-    <string name="question_moon_year">Would you live on the moon for a year?</string>
-    <string name="question_superpower_secret">Would you keep a superpower secret?</string>
+
+    <!-- At this table -->
+    <string name="question_table_liar">Is someone at this table lying to you right now?</string>
+    <string name="question_trust_left">Look at the person on your left. Do you trust them?</string>
+    <string name="question_lie_to_win">Would you lie to someone at this table to win?</string>
+    <string name="question_sell_friend">Would you sell out your closest friend here for 100 coins?</string>
+    <string name="question_know_betrayer">Do you already know who will betray you tonight?</string>
+    <string name="question_secret_ruin">Does someone at this table know a secret that could ruin you?</string>
+    <string name="question_pretend_like">Is anyone here only pretending to like you?</string>
+    <string name="question_closer_than">Are you closer to someone here than they are to you?</string>
+    <string name="question_replace_month">Could this group replace you within a month?</string>
+    <string name="question_owe_apology">Does someone at this table owe you an apology?</string>
+    <string name="question_read_messages">If this table read your last ten messages, would you still be welcome?</string>
+    <string name="question_hear_thoughts">Would you let this table hear your thoughts for one minute?</string>
+    <string name="question_rather_lose">Would you rather lose than watch the person opposite you win?</string>
+    <string name="question_smartest_here">Are you the smartest person at this table?</string>
+    <string name="question_friend_same_vote">Will your best friend here vote the same way as you?</string>
+
+    <!-- The game itself -->
+    <string name="question_vote_as_said">Will you vote the way you say you will this round?</string>
+    <string name="question_honest_answer">Will you answer this question honestly?</string>
+    <string name="question_richest_deserve">Does the richest player right now deserve it?</string>
+    <string name="question_poorest_fault">Is the poorest player here just bad at this game?</string>
+    <string name="question_promise_worth">Is a promise made in this game worth anything?</string>
+    <string name="question_smarter_majority">Are you smarter than the majority?</string>
+    <string name="question_future_regret">Will you regret the vote you cast this round?</string>
     <string name="question_break_promise">Is it ever right to break a promise?</string>
-    <string name="question_pet_names">Should pets have human names?</string>
+
+    <!-- Dilemmas -->
+    <string name="question_partner_phone">Is it fair to read your partner\'s phone if you suspect them?</string>
+    <string name="question_tell_cheating">Would you tell your best friend their partner is cheating, with no proof?</string>
+    <string name="question_lost_wallet">Would you keep a wallet full of cash if nobody could ever find out?</string>
+    <string name="question_dog_stranger">Would you save your own dog before a stranger?</string>
+    <string name="question_report_friend">Would you report your best friend for a serious crime?</string>
+    <string name="question_salary_ask">Is it okay to ask a friend how much they earn?</string>
+    <string name="question_parents_marriage">Should your parents have a say in who you marry?</string>
+    <string name="question_late_disrespect">Is being late a sign you don\'t respect people?</string>
+    <string name="question_split_bill">Should the bill always be split equally, whatever you ordered?</string>
+    <string name="question_ghosting_kinder">Is ghosting kinder than an honest goodbye?</string>
+    <string name="question_trust_after_cheat">Can you ever fully trust someone again after they cheat?</string>
+    <string name="question_favourite_child">Do parents secretly have a favourite child?</string>
+    <string name="question_ex_friends">Can you truly stay friends with an ex?</string>
+    <string name="question_cancel_last_minute">Is cancelling plans an hour before ever forgivable?</string>
+    <string name="question_dream_job">Would you take your best friend\'s dream job if it were offered to you?</string>
+    <string name="question_good_unwatched">Are people good when nobody is watching?</string>
+    <string name="question_absolute_power">With absolute power, would you stay a good person?</string>
+
+    <!-- Temptation -->
+    <string name="question_forget_memory">Would you erase your happiest memory for ₹10 crore?</string>
+    <string name="question_leak_secret">Would you leak a friend\'s secret for ₹1 crore?</string>
+    <string name="question_cruel_famous">Would you be cruel for one year to be famous forever?</string>
+    <string name="question_live_150">Would you live to 150 if everyone you love didn\'t?</string>
+
+    <!-- Existential -->
+    <string name="question_simulation">If all of this were a simulation, would you want to know?</string>
+    <string name="question_memory_wipe">Would you erase all your memories to be perfectly happy?</string>
+    <string name="question_live_again">Would you live your exact life again, every mistake included?</string>
+    <string name="question_remembered">Will anyone remember your name a hundred years from now?</string>
+    <string name="question_real_you">Does anyone really know the real you?</string>
+    <string name="question_chose_today">Did you actually choose anything you did today?</string>
+    <string name="question_younger_proud">Would your ten-year-old self be proud of you?</string>
+    <string name="question_perfect_copy">If a perfect copy of you replaced you tonight, would anyone notice?</string>
+    <string name="question_painful_truth">Would you rather know a painful truth than live a happy lie?</string>
+    <string name="question_death_date">Would you want to know the exact date you\'ll die?</string>
+    <string name="question_one_life">Is this life the only one you get?</string>
+    <string name="question_dreaming">Can you prove you\'re not dreaming right now?</string>
+    <string name="question_wasting_life">Are you wasting your life right now?</string>
+    <string name="question_billion_years">In a billion years, will any of this have mattered?</string>
+    <string name="question_unconditional_love">Is any love truly unconditional?</string>
+
+    <!-- Food fights -->
+    <string name="question_pineapple_pizza">Does pineapple belong on pizza?</string>
+    <string name="question_biryani">Is biryani just very confident rice?</string>
 </resources>

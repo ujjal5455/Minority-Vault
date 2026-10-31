@@ -10,8 +10,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.minorityvault.designsystem.MinorityVaultTheme
 import com.example.minorityvault.designsystem.R
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.preview.ComponentPreviews
@@ -63,7 +63,7 @@ fun ContractCard(
 @ComponentPreviews
 @Composable
 private fun ContractCardPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         Column(Modifier.padding(VaultSpacing.lg), verticalArrangement = Arrangement.spacedBy(VaultSpacing.md)) {
             ContractCard(
                 title = "From Ben",

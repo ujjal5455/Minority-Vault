@@ -98,6 +98,8 @@ data class RevealUiState(
     val promiseBreakers: List<PlayerId>,
     val newDebtors: List<PlayerId>,
     val recoveredDebtors: List<PlayerId>,
+    /** Balances as the round started; [players] holds them after settlement. */
+    val balancesBefore: Map<PlayerId, Int>,
 )
 
 fun List<PlayerUi>.nameOf(id: PlayerId): String = firstOrNull { it.id == id }?.name ?: id.value
@@ -187,5 +189,6 @@ fun revealUiState(view: PublicGameView): RevealUiState? {
         promiseBreakers = steps.filterIsInstance<RevealStep.PromisesBroken>().singleOrNull()?.players.orEmpty(),
         newDebtors = debtors?.newDebtors.orEmpty(),
         recoveredDebtors = debtors?.recovered.orEmpty(),
+        balancesBefore = steps.filterIsInstance<RevealStep.Settled>().single().previous,
     )
 }

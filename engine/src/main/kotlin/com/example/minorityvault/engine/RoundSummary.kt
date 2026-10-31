@@ -23,6 +23,8 @@ data class RoundSummary(
     val potBefore: Int,
     /** Contracts move coins between players, never into or out of the pot, so this is also what rolls over. */
     val potAfter: Int,
+    /** Balances as the round reached REVEAL (after any signing fees), so clients can count from them. */
+    val balancesBefore: Map<PlayerId, Int>,
     val balancesAfter: Map<PlayerId, Int>,
 ) {
     /** The public part of this summary, as an ordered story. */
@@ -40,7 +42,7 @@ data class RoundSummary(
                 if (newDebtors.isNotEmpty() || recoveredDebtors.isNotEmpty()) {
                     add(RevealStep.DebtorsChanged(newDebtors, recoveredDebtors))
                 }
-                add(RevealStep.Settled(balancesAfter, potAfter))
+                add(RevealStep.Settled(balancesAfter, potAfter, balancesBefore))
             },
         )
 }
@@ -68,5 +70,6 @@ sealed interface RevealStep {
 
     data class DebtorsChanged(val newDebtors: List<PlayerId>, val recovered: List<PlayerId>) : RevealStep
 
-    data class Settled(val balances: Map<PlayerId, Int>, val pot: Int) : RevealStep
+    /** [balances] after the round; [previous] as it started, so balances can count from one to the other. */
+    data class Settled(val balances: Map<PlayerId, Int>, val pot: Int, val previous: Map<PlayerId, Int>) : RevealStep
 }

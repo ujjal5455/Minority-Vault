@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.preview.ComponentPreviews
@@ -46,7 +46,7 @@ private const val SLAM_START_SCALE = 1.8f
 @ComponentPreviews
 @Composable
 private fun StampPreview() {
-    MinorityVaultTheme(reducedMotion = true) {
+    VaultPreviewTheme {
         Stamp("Broken promise", Modifier.padding(VaultSpacing.xl))
     }
 }

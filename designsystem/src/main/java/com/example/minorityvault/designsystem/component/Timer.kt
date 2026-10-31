@@ -26,9 +26,9 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.example.minorityvault.designsystem.MinorityVaultTheme
 import com.example.minorityvault.designsystem.R
 import com.example.minorityvault.designsystem.URGENT_SECONDS
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.preview.ComponentPreviews
@@ -99,7 +99,7 @@ private const val SECONDS_PER_MINUTE = 60
 @ComponentPreviews
 @Composable
 private fun TimerPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         Column(Modifier.padding(VaultSpacing.lg), verticalArrangement = Arrangement.spacedBy(VaultSpacing.sm)) {
             TimerText(secondsLeft = 125)
             TimerBar(fraction = 0.8f, secondsLeft = 125)

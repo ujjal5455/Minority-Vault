@@ -1,6 +1,5 @@
 package com.example.minorityvault.designsystem.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,17 +7,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.GlassSurface
+import com.example.minorityvault.designsystem.GlassTint
 import com.example.minorityvault.designsystem.R
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
+import com.example.minorityvault.designsystem.glassRim
 import com.example.minorityvault.designsystem.preview.ComponentPreviews
 
 /** A chat line. Promises carry a brass badge, because breaking one earns a public stamp. */
@@ -32,12 +33,10 @@ fun ChatBubble(
 ) {
     val colors = VaultTheme.colors
     Box(modifier.fillMaxWidth(), contentAlignment = if (mine) Alignment.CenterEnd else Alignment.CenterStart) {
-        Surface(
+        GlassSurface(
             modifier = Modifier.widthIn(max = MAX_BUBBLE_WIDTH),
-            shape = MaterialTheme.shapes.medium,
-            color = if (mine) colors.panelRaised else colors.panel,
-            contentColor = colors.onPanel,
-            border = if (isPromise) BorderStroke(1.dp, colors.brass) else null,
+            tint = if (mine) GlassTint.Raised else GlassTint.Panel,
+            rim = if (isPromise) glassRim(colors.brass, PROMISE_RIM_STRENGTH) else glassRim(),
         ) {
             Column(Modifier.padding(VaultSpacing.md), verticalArrangement = Arrangement.spacedBy(VaultSpacing.xxs)) {
                 if (sender != null) {
@@ -57,11 +56,12 @@ fun ChatBubble(
 }
 
 private val MAX_BUBBLE_WIDTH = 300.dp
+private const val PROMISE_RIM_STRENGTH = 1.8f
 
 @ComponentPreviews
 @Composable
 private fun ChatBubblePreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         Column(Modifier.padding(VaultSpacing.lg), verticalArrangement = Arrangement.spacedBy(VaultSpacing.sm)) {
             ChatBubble("I will vote YES this round.", mine = false, sender = "Ben", isPromise = true)
             ChatBubble("I will vote NO this round.", mine = true, isPromise = true)

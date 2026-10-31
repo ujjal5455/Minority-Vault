@@ -2,9 +2,14 @@ package com.example.minorityvault.hotseat
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.snap
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -19,12 +24,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.minorityvault.R
+import com.example.minorityvault.designsystem.VaultBackdrop
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.feature.results.GameOverScreen
 import com.example.minorityvault.feature.round.FlipScreen
 import com.example.minorityvault.feature.round.NegotiationScreen
 import com.example.minorityvault.feature.round.QuestionScreen
 import com.example.minorityvault.feature.round.RevealScreen
+import com.example.minorityvault.feature.round.RoundAction
 import com.example.minorityvault.feature.round.VoteScreen
 
 @Composable
@@ -48,52 +55,70 @@ fun HotSeatApp(state: HotSeatUiState, onEvent: (HotSeatEvent) -> Unit, modifier:
         )
     }
     val reducedMotion = VaultTheme.reducedMotion
-    AnimatedContent(
-        targetState = state,
-        contentKey = { it::class },
-        transitionSpec = {
-            if (reducedMotion) fadeIn(snap()) togetherWith fadeOut(snap()) else fadeIn() togetherWith fadeOut()
-        },
-        modifier = modifier,
-        label = "hot seat screen",
-    ) { screen ->
-        when (screen) {
-            is HotSeatUiState.Setup -> HotSeatSetupScreen(screen, onEvent)
+    VaultBackdrop(modifier) {
+        AnimatedContent(
+            targetState = state,
+            contentKey = { it::class },
+            transitionSpec = {
+                when {
+                    reducedMotion -> fadeIn(snap()) togetherWith fadeOut(snap())
 
-            is HotSeatUiState.PassPhone -> PassPhoneScreen(screen, onShow = { onEvent(HotSeatEvent.ShowTurn) })
+                    // The vault door does its own closing animation.
+                    targetState is HotSeatUiState.PassPhone -> quickFade()
 
-            is HotSeatUiState.NegotiationPassDone -> NegotiationPassDoneScreen(screen, onEvent)
-
-            is HotSeatUiState.Question -> QuestionScreen(screen.state, onContinue = { onEvent(HotSeatEvent.Continue) })
-
-            is HotSeatUiState.Negotiation -> NegotiationScreen(
-                screen.state,
-                onAction = { onEvent(HotSeatEvent.Round(it)) },
-                onFinishTurn = { onEvent(HotSeatEvent.FinishTurn) },
-            )
-
-            is HotSeatUiState.Vote -> VoteScreen(
-                screen.state,
-                onAction = { onEvent(HotSeatEvent.Round(it)) },
-                onFinishTurn = { onEvent(HotSeatEvent.FinishTurn) },
-            )
-
-            is HotSeatUiState.Flip -> FlipScreen(
-                screen.state,
-                onAction = { onEvent(HotSeatEvent.Round(it)) },
-                onFinishTurn = { onEvent(HotSeatEvent.FinishTurn) },
-            )
-
-            is HotSeatUiState.Reveal -> RevealScreen(screen.state, onContinue = { onEvent(HotSeatEvent.Continue) })
-
-            is HotSeatUiState.GameOver -> GameOverScreen(
-                screen.state,
-                onPlayAgain = { onEvent(HotSeatEvent.PlayAgain) },
-                onNewPlayers = { onEvent(HotSeatEvent.NewPlayers) },
-            )
-        }
+                    else -> heavyPanelSlide()
+                }
+            },
+            label = "hot seat screen",
+        ) { screen -> HotSeatScreen(screen, onEvent) }
     }
 }
+
+@Composable
+private fun HotSeatScreen(screen: HotSeatUiState, onEvent: (HotSeatEvent) -> Unit) {
+    val onAction = { action: RoundAction -> onEvent(HotSeatEvent.Round(action)) }
+    val onFinishTurn = { onEvent(HotSeatEvent.FinishTurn) }
+    val onContinue = { onEvent(HotSeatEvent.Continue) }
+    when (screen) {
+        is HotSeatUiState.Setup -> HotSeatSetupScreen(screen, onEvent)
+
+        is HotSeatUiState.PassPhone -> PassPhoneScreen(screen, onShow = { onEvent(HotSeatEvent.ShowTurn) })
+
+        is HotSeatUiState.NegotiationPassDone -> NegotiationPassDoneScreen(screen, onEvent)
+
+        is HotSeatUiState.Question -> QuestionScreen(screen.state, onContinue)
+
+        is HotSeatUiState.Negotiation -> NegotiationScreen(screen.state, onAction, onFinishTurn)
+
+        is HotSeatUiState.Vote -> VoteScreen(screen.state, onAction, onFinishTurn)
+
+        is HotSeatUiState.Flip -> FlipScreen(screen.state, onAction, onFinishTurn)
+
+        is HotSeatUiState.Reveal -> RevealScreen(screen.state, onContinue)
+
+        is HotSeatUiState.GameOver -> GameOverScreen(
+            screen.state,
+            onPlayAgain = { onEvent(HotSeatEvent.PlayAgain) },
+            onNewPlayers = { onEvent(HotSeatEvent.NewPlayers) },
+        )
+    }
+}
+
+private fun quickFade(): ContentTransform =
+    fadeIn(tween(QUICK_FADE_MILLIS)) togetherWith fadeOut(tween(QUICK_FADE_MILLIS))
+
+/** The new screen rises into place like a heavy panel; the old one lifts away. */
+private fun heavyPanelSlide(): ContentTransform {
+    val rise = slideInVertically(tween(PANEL_MILLIS, easing = HeavyEasing)) { it / PANEL_RISE } + fadeIn()
+    val lift = slideOutVertically(tween(PANEL_MILLIS, easing = HeavyEasing)) { -it / PANEL_LIFT } + fadeOut()
+    return rise togetherWith lift
+}
+
+private val HeavyEasing = CubicBezierEasing(0.2f, 0f, 0f, 1f)
+private const val PANEL_MILLIS = 480
+private const val QUICK_FADE_MILLIS = 150
+private const val PANEL_RISE = 3
+private const val PANEL_LIFT = 6
 
 @Composable
 private fun QuitDialog(onQuit: () -> Unit, onDismiss: () -> Unit) {

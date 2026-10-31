@@ -13,12 +13,14 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.component.ChatBubble
 import com.example.minorityvault.designsystem.component.ContractCard
+import com.example.minorityvault.designsystem.component.PaperCard
 import com.example.minorityvault.designsystem.component.VaultButton
 import com.example.minorityvault.designsystem.preview.ScreenPreviews
 import com.example.minorityvault.engine.Contract
@@ -48,10 +50,14 @@ fun NegotiationScreen(
             { VaultButton(stringResource(R.string.done_pass_phone), onClick = it, modifier = Modifier.fillMaxWidth()) }
         },
     ) {
+        // The question stays in view: it is what the table argues about while it schemes.
+        PaperCard(Modifier.fillMaxWidth()) {
+            Text(stringResource(state.header.questionRes), style = MaterialTheme.typography.titleLarge)
+        }
         ErrorBanner(state.error)
         PrimaryTabRow(
             selectedTabIndex = tab,
-            containerColor = VaultTheme.colors.ink,
+            containerColor = Color.Transparent,
             contentColor = VaultTheme.colors.brass,
         ) {
             listOf(R.string.tab_lobby, R.string.tab_messages, R.string.tab_contracts).forEachIndexed { index, label ->
@@ -176,7 +182,7 @@ private fun NegotiationScreenPreview() {
         ),
         contractFee = 5,
     )
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         NegotiationScreen(state, onAction = {}, onFinishTurn = {})
     }
 }

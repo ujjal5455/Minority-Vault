@@ -149,7 +149,7 @@ Tasks:
 1. :audio — SoundManager (SoundPool) for: dial click, final dial clunk, vote lock, countdown tick, heartbeat, reveal boom, coin cascade, betrayal sting, pen scratch, UI tap. Use royalty-free/CC0 sounds and record their sources and licences in docs/assets.md.
 2. MusicController (Media3): layered stems for negotiation (base + 2 tension layers faded in as the timer drains), near-silence during vote, stingers on reveal (win/lose per player).
 3. Haptics wrapper: lever pull, vote lock (strong), coin win (light pattern), betrayal (double pulse).
-4. Animations: lever handle, dial spin with ease-out, coin count-up, stamp slam, timer pulse under 10 s. All respect reduced motion.
+4. Animations were built early (the glass vault pass after Phase 2; see CLAUDE.md §8). Here, sync sounds and haptics to them (lever, bolt, dial ticks, coin burst, stamp, vault door) and tune timings on real phones. Keep reduced motion working.
 5. Settings: master/music/SFX volume, haptics on/off.
 
 Acceptance:

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -16,13 +15,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.GlassSurface
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.component.Lever
 import com.example.minorityvault.designsystem.component.PaperCard
+import com.example.minorityvault.designsystem.component.VaultBolt
 import com.example.minorityvault.designsystem.component.VaultButton
 import com.example.minorityvault.designsystem.component.VaultButtonStyle
+import com.example.minorityvault.designsystem.glassRim
 import com.example.minorityvault.designsystem.preview.ScreenPreviews
 import com.example.minorityvault.engine.Ballot
 import com.example.minorityvault.engine.PlayerId
@@ -108,6 +110,7 @@ private fun BallotControls(
                 )
             }
         }
+        VaultBolt(locked = ballot.locked)
         if (ballot.locked) {
             BodyText(stringResource(R.string.vote_locked))
             VaultButton(
@@ -134,7 +137,7 @@ private fun BallotControls(
 @Composable
 private fun DoubleVoteToggle(armed: Boolean, onToggle: (Boolean) -> Unit) {
     val colors = VaultTheme.colors
-    Surface(color = colors.panel, contentColor = colors.onPanel, shape = MaterialTheme.shapes.medium) {
+    GlassSurface(rim = if (armed) glassRim(colors.brass, ARMED_RIM_STRENGTH) else glassRim()) {
         Row(
             Modifier
                 .fillMaxWidth()
@@ -166,10 +169,12 @@ private fun DoubleVoteToggle(armed: Boolean, onToggle: (Boolean) -> Unit) {
     }
 }
 
+private const val ARMED_RIM_STRENGTH = 1.8f
+
 @ScreenPreviews
 @Composable
 private fun VoteScreenPreview() {
-    MinorityVaultTheme(reducedMotion = true) {
+    VaultPreviewTheme {
         VoteScreen(
             VoteUiState(
                 header = PreviewData.header,

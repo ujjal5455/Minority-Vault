@@ -49,6 +49,7 @@ internal fun resolveRound(config: GameConfig, players: List<Player>, pot: Int, r
         recoveredDebtors = recovered,
         potBefore = pot,
         potAfter = ledger.pot,
+        balancesBefore = players.associate { it.id to it.balance },
         balancesAfter = ledger.balances(),
     )
     return Resolution(settled, ledger.pot, summary)

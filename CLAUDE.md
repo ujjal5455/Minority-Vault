@@ -33,7 +33,7 @@ All numbers live in `GameConfig` and must never be hardcoded elsewhere.
 
 **Round flow:** `QUESTION → NEGOTIATION → VOTE → [FLIP_WINDOW] → REVEAL → SETTLEMENT → (next round | GAME_OVER)`. `FLIP_WINDOW` happens only when the round's twist is `SecondChance`. All money and Debtor changes from resolution happen when REVEAL starts; SETTLEMENT only shows them.
 
-**Questions:** the engine picks each round's question from a `QuestionBank` of stable question IDs, using the seeded RNG and never repeating within a match. The engine stores only the ID; the text lives in localised string resources in `:ai` (`QuestionBank`). Never rename or reuse an ID. The Keeper does not write questions.
+**Questions:** the engine picks each round's question from a `QuestionBank` of stable question IDs, using the seeded RNG and never repeating within a match. The engine stores only the ID; the text lives in localised string resources in `:ai` (`QuestionBank`). Never rename or reuse an ID. The Keeper does not write questions. Questions are written to sting, because they are what the table argues about while it schemes: paranoia about the people at the table, the game itself, dilemmas that start fights, temptation, and existential doubt, with the odd food fight. They stay yes/no, readable in a few seconds, and never target real groups of people or touch self-harm. The question stays visible during NEGOTIATION and VOTE.
 
 **Money invariants:**
 - Coins are conserved exactly: the sum of all balances plus the pot never changes during a match. There are no sinks.
@@ -94,6 +94,7 @@ Contracts expire at end of round. Unsigned proposals expire when VOTE starts. A 
 |---|---|---|
 | Language | Kotlin 2.x | Standard for Android |
 | UI | Jetpack Compose + Material 3 (custom theme) | UI-heavy game, no physics needed |
+| Glass blur | Haze (`haze`, `haze-blur`) in `:designsystem` only | Backdrop blur for the glass look, with a fallback below Android 12 |
 | Architecture | Single activity, MVVM + MVI-style intents, Kotlin Coroutines/Flow | Predictable state |
 | DI | Hilt | Standard, testable |
 | Local multiplayer | Google Nearby Connections API (`P2P_STAR`) | Offline, Bluetooth + Wi-Fi, encrypted |
@@ -168,7 +169,9 @@ Keeper calls only happen on the host, only between phases (never blocking a time
 
 - **Palette (banknote and vault):** ink green `#0F2B27` base, panels `#173B35` / `#1E4740`, aged paper `#EAE3CF` for anything official (questions, contracts), brass `#C9A055` for money and primary actions, stamp red `#D2584A` for time pressure and betrayal only, steel `#93A09B` for mechanical parts.
 - **Type:** a condensed display face (e.g. Big Shoulders Display) for numbers and headlines; a clean sans (e.g. Instrument Sans) for UI text. Bundle fonts locally; check licences (OFL is fine).
-- **Signature elements:** the vote **Lever**, the reveal **VaultDial**, **PaperCard** for questions/contracts, red **Stamp** for broken promises.
+- **Glass vault:** every panel is frosted glass (`GlassSurface`) over a `VaultBackdrop` of ink green with slow-drifting brass and teal light and faint sparks. Glass blurs the backdrop (Haze, Android 12+; older phones get a more opaque tint), is tinted by role (`GlassTint`: Panel, Raised, Paper for official things with dark text, Brass for primary actions, Danger for betrayal), and catches light on its rim. Screens never paint an opaque background over the backdrop.
+- **Signature elements:** the vote **Lever** and lock **VaultBolt**, the reveal **VaultDial**, **PaperCard** (frosted paper) for questions/contracts, red **Stamp** for broken promises, the pass-the-phone **VaultDoor**, and **CoinBurst** for payouts.
+- **Motion:** the reveal is staged (dial settles, then each vote flips over, coins fly, stamps slam, balances count); levers overshoot, buttons press in, the bolt slides home on lock; the Keeper's lines type out while the keyhole glows; balances and the pot count rather than jump; brass catches a passing sheen. Screens slide like heavy panels; the cover is a vault door that swings shut and opens. Everything respects reduced motion, and only the backdrop runs continuously (at about 15 fps) to save battery.
 - **Sound:** dial clicks, vote-lock clunk (+ haptic), countdown tick with heartbeat in the last 10 s, reveal boom, coin cascade, betrayal sting, pen scratch on signing. Music layers add tension as the negotiation timer drains; near silence during the vote.
 - Copy is sentence case, plain, and in the Vault Keeper's dry, theatrical voice for host lines only.
 

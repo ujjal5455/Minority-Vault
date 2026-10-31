@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.component.PaperCard
 import com.example.minorityvault.designsystem.component.VaultButton
@@ -84,7 +84,7 @@ private fun FlipControls(vote: Vote, forPlayer: PlayerId?, label: String?, onAct
 @ScreenPreviews
 @Composable
 private fun FlipScreenPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         FlipScreen(
             FlipUiState(
                 header = PreviewData.header,

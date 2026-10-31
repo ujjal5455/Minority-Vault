@@ -1,6 +1,5 @@
 package com.example.minorityvault.feature.round
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,9 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,11 +27,15 @@ import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.example.minorityvault.designsystem.CountingText
+import com.example.minorityvault.designsystem.GlassSurface
+import com.example.minorityvault.designsystem.GlassTint
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.component.PlayerChip
 import com.example.minorityvault.designsystem.component.TimerBar
 import com.example.minorityvault.designsystem.component.TimerText
+import com.example.minorityvault.designsystem.pulseOnIncrease
 import com.example.minorityvault.engine.PlayerId
 import com.example.minorityvault.engine.RuleError
 
@@ -47,10 +50,10 @@ internal fun RoundScaffold(
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val colors = VaultTheme.colors
+    // No background of its own: the glass panels need the vault backdrop behind them.
     Column(
         modifier
             .fillMaxSize()
-            .background(colors.ink)
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         Column(
@@ -79,7 +82,7 @@ internal fun RoundScaffold(
             content()
         }
         if (bottomBar != null) {
-            Surface(color = colors.panel, contentColor = colors.onPanel) {
+            GlassSurface(Modifier.fillMaxWidth(), shape = BottomBarShape) {
                 Column(
                     Modifier.fillMaxWidth().padding(VaultSpacing.lg),
                     verticalArrangement = Arrangement.spacedBy(VaultSpacing.sm),
@@ -100,10 +103,12 @@ private fun RoundHeader(header: RoundHeaderUi) {
                 style = MaterialTheme.typography.labelLarge,
                 color = colors.onPanelMuted,
             )
-            Text(
-                stringResource(R.string.round_pot, header.pot),
+            CountingText(
+                value = header.pot,
+                format = { stringResource(R.string.round_pot, it) },
                 style = MaterialTheme.typography.titleMedium,
                 color = colors.brass,
+                modifier = Modifier.pulseOnIncrease(header.pot),
             )
         }
         Row(
@@ -152,17 +157,20 @@ internal fun BodyText(text: String, modifier: Modifier = Modifier) {
 @Composable
 internal fun ErrorBanner(error: RuleError?) {
     if (error == null) return
-    val colors = VaultTheme.colors
-    Box(
-        Modifier
-            .fillMaxWidth()
-            .border(1.dp, colors.stampRed, MaterialTheme.shapes.small)
-            .padding(VaultSpacing.md)
-            .semantics { liveRegion = LiveRegionMode.Polite },
+    GlassSurface(
+        Modifier.fillMaxWidth().semantics { liveRegion = LiveRegionMode.Polite },
+        shape = MaterialTheme.shapes.small,
+        tint = GlassTint.Danger,
     ) {
-        Text(ruleErrorText(error), style = MaterialTheme.typography.bodyMedium, color = colors.stampRed)
+        Text(
+            ruleErrorText(error),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(VaultSpacing.md),
+        )
     }
 }
+
+private val BottomBarShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
 
 /** Players two to a row. [showLocks] adds VOTE lock dots. */
 @Composable

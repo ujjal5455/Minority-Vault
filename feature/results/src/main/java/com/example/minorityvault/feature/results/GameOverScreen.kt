@@ -1,7 +1,8 @@
 package com.example.minorityvault.feature.results
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,11 +14,16 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -25,15 +31,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.example.minorityvault.designsystem.MinorityVaultTheme
+import com.example.minorityvault.designsystem.CountingText
+import com.example.minorityvault.designsystem.GlassSurface
+import com.example.minorityvault.designsystem.VaultPreviewTheme
 import com.example.minorityvault.designsystem.VaultSpacing
 import com.example.minorityvault.designsystem.VaultTheme
 import com.example.minorityvault.designsystem.component.KeeperBubble
 import com.example.minorityvault.designsystem.component.VaultButton
 import com.example.minorityvault.designsystem.component.VaultButtonStyle
+import com.example.minorityvault.designsystem.glassRim
 import com.example.minorityvault.designsystem.preview.ScreenPreviews
+import com.example.minorityvault.designsystem.sheen
 import com.example.minorityvault.engine.PlayerId
 import com.example.minorityvault.engine.PublicGameView
+import kotlinx.coroutines.delay
 import com.example.minorityvault.designsystem.R as DesignR
 
 data class RankedPlayer(
@@ -77,10 +88,18 @@ fun GameOverScreen(
     modifier: Modifier = Modifier,
 ) {
     val colors = VaultTheme.colors
+    // Rows arrive from last place up, so the winner lands last.
+    val reducedMotion = VaultTheme.reducedMotion
+    var arrived by remember { mutableIntStateOf(if (reducedMotion) state.ranking.size else 0) }
+    LaunchedEffect(state) {
+        while (arrived < state.ranking.size) {
+            delay(ROW_ARRIVAL_MILLIS)
+            arrived++
+        }
+    }
     Column(
         modifier
             .fillMaxSize()
-            .background(colors.ink)
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         Column(
@@ -93,13 +112,20 @@ fun GameOverScreen(
             Text(
                 stringResource(R.string.game_over_title),
                 style = MaterialTheme.typography.displaySmall,
-                color = colors.onPanel,
-                modifier = Modifier.semantics { heading() },
+                color = colors.brass,
+                modifier = Modifier.semantics { heading() }.sheen(),
             )
             KeeperBubble(verdict(state))
-            state.ranking.forEach { RankingRow(it) }
+            state.ranking.forEachIndexed { index, player ->
+                AnimatedVisibility(
+                    visible = state.ranking.size - index <= arrived,
+                    enter = fadeIn() + slideInVertically { it / 2 },
+                ) {
+                    RankingRow(player)
+                }
+            }
         }
-        Surface(color = colors.panel) {
+        GlassSurface(Modifier.fillMaxWidth(), shape = BottomBarShape) {
             Column(
                 Modifier.fillMaxWidth().padding(VaultSpacing.lg),
                 verticalArrangement = Arrangement.spacedBy(VaultSpacing.sm),
@@ -129,11 +155,9 @@ private fun verdict(state: GameOverUiState): String {
 @Composable
 private fun RankingRow(player: RankedPlayer) {
     val colors = VaultTheme.colors
-    Surface(
-        color = colors.panel,
-        contentColor = colors.onPanel,
-        shape = MaterialTheme.shapes.medium,
-        border = if (player.isWinner) BorderStroke(2.dp, colors.brass) else null,
+    GlassSurface(
+        rim = if (player.isWinner) glassRim(colors.brass, WINNER_RIM_STRENGTH) else glassRim(),
+        modifier = Modifier.sheen(enabled = player.isWinner),
     ) {
         Row(
             Modifier.fillMaxWidth().padding(VaultSpacing.md),
@@ -169,21 +193,26 @@ private fun RankingRow(player: RankedPlayer) {
                     )
                 }
             }
-            Text(
-                pluralStringResource(DesignR.plurals.coins, player.balance, player.balance),
+            CountingText(
+                value = player.balance,
+                format = { pluralStringResource(DesignR.plurals.coins, it, it) },
                 style = MaterialTheme.typography.headlineSmall,
                 color = colors.brass,
+                countFromZero = true,
             )
         }
     }
 }
 
 private val RANK_WIDTH = 32.dp
+private val BottomBarShape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+private const val ROW_ARRIVAL_MILLIS = 450L
+private const val WINNER_RIM_STRENGTH = 2f
 
 @ScreenPreviews
 @Composable
 private fun GameOverScreenPreview() {
-    MinorityVaultTheme {
+    VaultPreviewTheme {
         GameOverScreen(
             GameOverUiState(
                 listOf(

@@ -24,8 +24,14 @@ All notable changes to this project are documented here. The format follows [Kee
   - `:feature:results`: game-over ranking.
   - `:app`: pass-the-phone play with a cover screen between private turns, driven by the real engine, with 8 tests including a full match played through UI events.
 - `PublicGameView.contractFee`, so clients can warn before signing.
+- Glass vault look: frosted-glass panels (Haze blur on Android 12+, tinted fallback below) over a drifting brass-and-teal backdrop; `GlassSurface`, `VaultBackdrop`, `VaultPreviewTheme`.
+- Animations: staged reveal (dial overshoot and settle with totals hidden until it stops, votes flipping over one by one, coin burst, counting payout and balances, stamps on cue), lever overshoot, button press, lock bolt, typewriter Keeper with a glowing keyhole, brass sheen, pot pulse, vault-door cover and heavy-panel screen transitions, game-over ranking rising from last place. All respect reduced motion.
+- `RoundSummary.balancesBefore` and `RevealStep.Settled.previous`, so balances can count from their pre-round values.
 
 ### Changed
+- Question bank rewritten to provoke: 61 questions about the people at the table, the game itself, dilemmas, temptation and existential doubt. Most of the old light questions are retired; their ids are not reused. Nothing had been released, so no saved match refers to them.
+- The question now stays on screen during negotiation, not only on the question and vote screens.
+- CLAUDE.md §2: question tone and visibility.
 - CLAUDE.md §2: filled rule gaps (vote weighting, fines for abstainers, VoteSale timing, flip window, Insider totals, rounding, no negative balances, coin conservation, question bank, game-over ties).
 - CLAUDE.md §2: promises are now structured (`Promise(from, to, side)`) and judged at REVEAL as kept, broken or void; the broken-promise stamp is public, details stay private until GAME_OVER.
 - CLAUDE.md §6–7: live Vault Keeper interjections from templates, triggered only by public events, rate-limited and silent during voting; new `KeeperLine` message; `MarkPromise` renamed `MakePromise`.
